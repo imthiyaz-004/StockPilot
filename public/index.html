@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StockPilot</title>
+  <title>StockPilot - Inventory Intelligence</title>
   <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
@@ -96,13 +96,13 @@
           <span class="badge-tag">Setup</span>
         </div>
         <h2 id="onboarding-heading" class="card-title">Set Up Your Business Workspace</h2>
-        <p class="card-description">Create your business organization to begin managing products, suppliers, and inventory intelligence.</p>
+        <p class="card-description">Create your business organization to begin managing products, suppliers, and inventory.</p>
 
         <form id="onboarding-form" novalidate>
           <div class="form-group">
             <label for="biz-name">Business Name <span class="required">*</span></label>
             <input type="text" id="biz-name" name="name" required placeholder="e.g. Apex Retailers" maxlength="100">
-            <span class="field-hint">The legal or operating trade name for your business.</span>
+            <span class="field-hint">The operating trade name for your business.</span>
           </div>
 
           <div class="form-row">
@@ -145,7 +145,6 @@
           <div class="form-group">
             <label for="biz-location">Location <span class="optional">(Optional)</span></label>
             <input type="text" id="biz-location" name="location" placeholder="e.g. Bangalore, Karnataka" maxlength="150">
-            <span class="field-hint">City, region, or primary warehouse address.</span>
           </div>
 
           <button type="submit" id="onboarding-submit-btn" class="btn btn-primary btn-lg">
@@ -154,52 +153,235 @@
         </form>
       </section>
 
-      <!-- VIEW 3: Business Workspace (Shown when business exists) -->
-      <section id="workspace-section" class="card hidden" aria-labelledby="workspace-heading">
-        <div class="workspace-header">
-          <div>
-            <div class="workspace-eyebrow">Active Workspace</div>
-            <h2 id="workspace-name" class="workspace-title">-</h2>
+      <!-- VIEW 3: Business Workspace & Inventory Management -->
+      <section id="workspace-section" class="hidden">
+        <!-- Business Context Header Card -->
+        <div class="card mb-4">
+          <div class="workspace-header">
+            <div>
+              <div class="workspace-eyebrow">Active Organization</div>
+              <div class="workspace-selector-row">
+                <h2 id="workspace-name" class="workspace-title">-</h2>
+                <div id="business-switcher-wrapper" class="hidden">
+                  <select id="business-switcher-select" class="select-sm" aria-label="Switch Business"></select>
+                </div>
+              </div>
+            </div>
+            <div class="workspace-badges">
+              <span id="workspace-role-badge" class="status-badge success">OWNER</span>
+            </div>
           </div>
-          <div class="workspace-badges">
-            <span id="workspace-role-badge" class="status-badge success">Owner</span>
+
+          <div class="workspace-meta-grid">
+            <div class="meta-item">
+              <span class="meta-label">Industry</span>
+              <span id="workspace-industry" class="meta-value">-</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Location</span>
+              <span id="workspace-location" class="meta-value">-</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Currency</span>
+              <span id="workspace-currency" class="meta-value">-</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Tenant ID</span>
+              <span id="workspace-id" class="meta-value mono">-</span>
+            </div>
           </div>
         </div>
 
-        <div class="workspace-meta-grid">
-          <div class="meta-item">
-            <span class="meta-label">Industry</span>
-            <span id="workspace-industry" class="meta-value">-</span>
+        <!-- Inventory Operational Summary Cards -->
+        <div class="inventory-stats-grid mb-4">
+          <div class="stat-card">
+            <span class="stat-label">Total Products</span>
+            <span id="stat-total-products" class="stat-value">0</span>
           </div>
-          <div class="meta-item">
-            <span class="meta-label">Location</span>
-            <span id="workspace-location" class="meta-value">-</span>
+          <div class="stat-card">
+            <span class="stat-label">Total Units in Stock</span>
+            <span id="stat-total-units" class="stat-value">0</span>
           </div>
-          <div class="meta-item">
-            <span class="meta-label">Currency</span>
-            <span id="workspace-currency" class="meta-value">-</span>
+          <div class="stat-card">
+            <span class="stat-label">Low / Out of Stock</span>
+            <span id="stat-low-stock" class="stat-value text-warning">0</span>
           </div>
-          <div class="meta-item">
-            <span class="meta-label">Tenant ID</span>
-            <span id="workspace-id" class="meta-value mono">-</span>
+          <div class="stat-card">
+            <span class="stat-label">Inventory Valuation</span>
+            <span id="stat-total-valuation" class="stat-value">-</span>
           </div>
         </div>
 
-        <div class="workspace-notice">
-          <p><strong>Workspace Ready:</strong> Your multi-tenant organization is active and protected by Supabase Row Level Security. All business records, products, and movements are scoped strictly to this workspace.</p>
-        </div>
+        <!-- Main Inventory Card -->
+        <div class="card">
+          <div class="inventory-card-header">
+            <div>
+              <h3 class="section-title">Product Inventory</h3>
+              <p class="section-subtitle">Real-time inventory levels, pricing, and stock monitoring.</p>
+            </div>
+            <button id="btn-open-add-product" class="btn btn-primary btn-sm">
+              + Add Product
+            </button>
+          </div>
 
-        <div class="workspace-actions">
-          <button id="btn-verify-workspace-rls" class="btn btn-secondary">Test Workspace RLS Query</button>
-          <button id="btn-workspace-logout" class="btn btn-outline">Log Out</button>
-        </div>
+          <!-- Inventory Filter & Search Toolbar -->
+          <div class="inventory-toolbar">
+            <div class="search-input-wrapper">
+              <input type="text" id="inventory-search" placeholder="Search by product name or SKU..." aria-label="Search products">
+            </div>
+            <div class="filter-controls">
+              <select id="filter-category" aria-label="Filter by category">
+                <option value="all">All Categories</option>
+              </select>
+              <select id="filter-stock-status" aria-label="Filter by stock status">
+                <option value="all">All Stock Statuses</option>
+                <option value="in_stock">In Stock</option>
+                <option value="low_stock">Low Stock Alert</option>
+                <option value="out_of_stock">Out of Stock</option>
+              </select>
+              <select id="sort-products" aria-label="Sort products">
+                <option value="name-asc">Name (A → Z)</option>
+                <option value="name-desc">Name (Z → A)</option>
+                <option value="stock-desc">Stock (High → Low)</option>
+                <option value="stock-asc">Stock (Low → High)</option>
+                <option value="value-desc">Inventory Value (High → Low)</option>
+              </select>
+            </div>
+          </div>
 
-        <div id="workspace-rls-output" class="rls-output-box hidden">
-          <h4>Live Tenant Query Output:</h4>
-          <pre id="workspace-rls-json">Loading...</pre>
+          <!-- Products Table Container -->
+          <div class="table-responsive">
+            <table class="data-table" id="products-table">
+              <thead>
+                <tr>
+                  <th>Product & Category</th>
+                  <th>SKU</th>
+                  <th>Purchase Price</th>
+                  <th>Selling Price</th>
+                  <th>Stock Level</th>
+                  <th>Status</th>
+                  <th>Inventory Value</th>
+                  <th class="text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="products-tbody">
+                <tr>
+                  <td colspan="8" class="text-center py-4 text-muted">Loading inventory...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Empty State Container -->
+          <div id="inventory-empty-state" class="empty-state hidden">
+            <div class="empty-state-icon">📦</div>
+            <h4 class="empty-state-title">No products found</h4>
+            <p class="empty-state-text">Get started by creating your first product in this business workspace.</p>
+            <button id="btn-empty-add-product" class="btn btn-primary btn-sm">+ Add First Product</button>
+          </div>
         </div>
       </section>
     </main>
+
+    <!-- MODAL 1: Add / Edit Product Modal -->
+    <div id="product-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-product-title">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 id="modal-product-title">Add New Product</h3>
+          <button id="btn-close-product-modal" class="modal-close" aria-label="Close modal">&times;</button>
+        </div>
+
+        <form id="product-form" novalidate>
+          <input type="hidden" id="prod-id" name="id">
+
+          <div id="product-modal-alert" class="alert hidden" role="alert"></div>
+
+          <div class="form-group">
+            <label for="prod-name">Product Name <span class="required">*</span></label>
+            <input type="text" id="prod-name" name="name" required placeholder="e.g. Wireless Ergonomic Mouse" maxlength="150">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group form-col">
+              <label for="prod-sku">SKU <span class="optional">(Unique per business)</span></label>
+              <input type="text" id="prod-sku" name="sku" placeholder="e.g. WEM-001" maxlength="50">
+            </div>
+            <div class="form-group form-col">
+              <label for="prod-category">Category</label>
+              <input type="text" id="prod-category" name="category" placeholder="e.g. Electronics, Grocery" list="category-suggestions" maxlength="50">
+              <datalist id="category-suggestions">
+                <option value="General">
+                <option value="Electronics">
+                <option value="Grocery">
+                <option value="Apparel">
+                <option value="Food & Beverage">
+                <option value="Hardware">
+                <option value="Healthcare">
+              </datalist>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group form-col">
+              <label for="prod-purchase-price">Purchase Price <span class="required">*</span></label>
+              <input type="number" id="prod-purchase-price" name="purchase_price" required min="0" step="0.01" placeholder="0.00">
+            </div>
+            <div class="form-group form-col">
+              <label for="prod-selling-price">Selling Price <span class="required">*</span></label>
+              <input type="number" id="prod-selling-price" name="selling_price" required min="0" step="0.01" placeholder="0.00">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group form-col">
+              <label for="prod-stock">Current Stock <span class="required">*</span></label>
+              <input type="number" id="prod-stock" name="current_stock" required min="0" step="1" value="0">
+            </div>
+            <div class="form-group form-col">
+              <label for="prod-min-stock">Minimum Stock Alert <span class="required">*</span></label>
+              <input type="number" id="prod-min-stock" name="minimum_stock" required min="0" step="1" value="5">
+              <span class="field-hint">Triggers Low Stock indicator when current stock falls to or below this level.</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group form-col">
+              <label for="prod-supplier">Supplier <span class="optional">(Optional)</span></label>
+              <select id="prod-supplier" name="supplier_id">
+                <option value="">No Supplier Attached</option>
+              </select>
+            </div>
+            <div class="form-group form-col">
+              <label for="prod-unit">Unit of Measure</label>
+              <input type="text" id="prod-unit" name="unit" placeholder="units, pcs, boxes, kg" value="units" maxlength="20">
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" id="btn-cancel-product" class="btn btn-secondary">Cancel</button>
+            <button type="submit" id="btn-save-product" class="btn btn-primary">Save Product</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL 2: Delete Confirmation Modal -->
+    <div id="delete-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-delete-title">
+      <div class="modal-card modal-sm">
+        <div class="modal-header">
+          <h3 id="modal-delete-title">Confirm Product Deletion</h3>
+          <button id="btn-close-delete-modal" class="modal-close" aria-label="Close modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete <strong id="delete-product-name">-</strong>?</p>
+          <p class="field-hint mt-2">This action removes the product from your active inventory.</p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="btn-cancel-delete" class="btn btn-secondary">Cancel</button>
+          <button type="button" id="btn-confirm-delete" class="btn btn-danger">Delete Product</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="/js/app.js"></script>

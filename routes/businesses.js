@@ -171,22 +171,32 @@ router.post('/', async (req, res, next) => {
     }
 
     // 2. Ensure owner is explicitly recorded in business_members
-    const { error: memberError } = await req.supabase
+    // (If the database trigger trg_businesses_auto_owner_member is installed, it may have already inserted this)
+    const { data: existingMember } = await req.supabase
       .from('business_members')
-      .insert({
-        business_id: insertedBusiness.id,
-        user_id: ownerId,
-        role: 'owner'
-      });
+      .select('id')
+      .eq('business_id', insertedBusiness.id)
+      .eq('user_id', ownerId)
+      .maybeSingle();
 
-    if (memberError) {
-      // Roll back the business creation to prevent orphan business without owner membership
-      console.error('Membership insert failed, rolling back business creation:', memberError.message);
-      await req.supabase.from('businesses').delete().eq('id', insertedBusiness.id);
-      return res.status(500).json({
-        error: 'Failed to assign owner membership to the created business. Operation rolled back.',
-        details: memberError.message
-      });
+    if (!existingMember) {
+      const { error: memberError } = await req.supabase
+        .from('business_members')
+        .insert({
+          business_id: insertedBusiness.id,
+          user_id: ownerId,
+          role: 'owner'
+        });
+
+      if (memberError && !memberError.message.includes('uq_business_members_business_user')) {
+        // Roll back the business creation to prevent orphan business without owner membership
+        console.error('Membership insert failed, rolling back business creation:', memberError.message);
+        await req.supabase.from('businesses').delete().eq('id', insertedBusiness.id);
+        return res.status(500).json({
+          error: 'Failed to assign owner membership to the created business. Operation rolled back.',
+          details: memberError.message
+        });
+      }
     }
 
     const responseBusiness = {

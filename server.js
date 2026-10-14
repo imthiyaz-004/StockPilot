@@ -12,6 +12,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const authRouter = require('./routes/auth');
 const businessesRouter = require('./routes/businesses');
+const productsRouter = require('./routes/products');
+const suppliersRouter = require('./routes/suppliers');
 
 // API health endpoint
 app.get('/api/health', (req, res) => {
@@ -28,6 +30,12 @@ app.use('/api/auth', authRouter);
 
 // Business onboarding and management routes
 app.use('/api/businesses', businessesRouter);
+
+// Product and Inventory routes
+app.use('/api/products', productsRouter);
+
+// Suppliers routes
+app.use('/api/suppliers', suppliersRouter);
 
 // Catch-all handler for undefined API routes
 app.use('/api', (req, res) => {
