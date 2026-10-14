@@ -388,7 +388,7 @@ CREATE POLICY "Admins can delete sales records"
   USING (public.is_business_admin(business_id));
 
 -- ----------------------------------------------------------------------------
--- Sale Items Policies
+-- Sale Items Policies (Enforces parent sale and product tenant match)
 -- ----------------------------------------------------------------------------
 CREATE POLICY "Members can view sale items"
   ON public.sale_items FOR SELECT
@@ -396,12 +396,32 @@ CREATE POLICY "Members can view sale items"
 
 CREATE POLICY "Members can insert sale items"
   ON public.sale_items FOR INSERT
-  WITH CHECK (public.is_business_member(business_id));
+  WITH CHECK (
+    public.is_business_member(business_id) AND
+    EXISTS (
+      SELECT 1 FROM public.sales s
+      WHERE s.id = sale_id AND s.business_id = sale_items.business_id
+    ) AND
+    EXISTS (
+      SELECT 1 FROM public.products p
+      WHERE p.id = product_id AND p.business_id = sale_items.business_id
+    )
+  );
 
 CREATE POLICY "Members can update sale items"
   ON public.sale_items FOR UPDATE
   USING (public.is_business_member(business_id))
-  WITH CHECK (public.is_business_member(business_id));
+  WITH CHECK (
+    public.is_business_member(business_id) AND
+    EXISTS (
+      SELECT 1 FROM public.sales s
+      WHERE s.id = sale_id AND s.business_id = sale_items.business_id
+    ) AND
+    EXISTS (
+      SELECT 1 FROM public.products p
+      WHERE p.id = product_id AND p.business_id = sale_items.business_id
+    )
+  );
 
 CREATE POLICY "Admins can delete sale items"
   ON public.sale_items FOR DELETE
@@ -428,7 +448,7 @@ CREATE POLICY "Admins can delete purchases"
   USING (public.is_business_admin(business_id));
 
 -- ----------------------------------------------------------------------------
--- Purchase Items Policies
+-- Purchase Items Policies (Enforces parent purchase and product tenant match)
 -- ----------------------------------------------------------------------------
 CREATE POLICY "Members can view purchase items"
   ON public.purchase_items FOR SELECT
@@ -436,19 +456,39 @@ CREATE POLICY "Members can view purchase items"
 
 CREATE POLICY "Members can insert purchase items"
   ON public.purchase_items FOR INSERT
-  WITH CHECK (public.is_business_member(business_id));
+  WITH CHECK (
+    public.is_business_member(business_id) AND
+    EXISTS (
+      SELECT 1 FROM public.purchases pu
+      WHERE pu.id = purchase_id AND pu.business_id = purchase_items.business_id
+    ) AND
+    EXISTS (
+      SELECT 1 FROM public.products p
+      WHERE p.id = product_id AND p.business_id = purchase_items.business_id
+    )
+  );
 
 CREATE POLICY "Members can update purchase items"
   ON public.purchase_items FOR UPDATE
   USING (public.is_business_member(business_id))
-  WITH CHECK (public.is_business_member(business_id));
+  WITH CHECK (
+    public.is_business_member(business_id) AND
+    EXISTS (
+      SELECT 1 FROM public.purchases pu
+      WHERE pu.id = purchase_id AND pu.business_id = purchase_items.business_id
+    ) AND
+    EXISTS (
+      SELECT 1 FROM public.products p
+      WHERE p.id = product_id AND p.business_id = purchase_items.business_id
+    )
+  );
 
 CREATE POLICY "Admins can delete purchase items"
   ON public.purchase_items FOR DELETE
   USING (public.is_business_admin(business_id));
 
 -- ----------------------------------------------------------------------------
--- Inventory Movements Policies (Append-focused audit trail)
+-- Inventory Movements Policies (Append-focused audit trail with product match)
 -- ----------------------------------------------------------------------------
 CREATE POLICY "Members can view inventory movements"
   ON public.inventory_movements FOR SELECT
@@ -456,7 +496,13 @@ CREATE POLICY "Members can view inventory movements"
 
 CREATE POLICY "Members can insert inventory movements"
   ON public.inventory_movements FOR INSERT
-  WITH CHECK (public.is_business_member(business_id));
+  WITH CHECK (
+    public.is_business_member(business_id) AND
+    EXISTS (
+      SELECT 1 FROM public.products p
+      WHERE p.id = product_id AND p.business_id = inventory_movements.business_id
+    )
+  );
 
 CREATE POLICY "Admins can update inventory movements"
   ON public.inventory_movements FOR UPDATE
