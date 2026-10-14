@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StockPilot</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <header class="app-header">
+      <h1 class="app-title">StockPilot</h1>
+      <p class="app-subtitle">Full-stack inventory intelligence platform foundation</p>
+    </header>
+
+    <main class="content">
+      <section class="card" aria-labelledby="status-heading">
+        <h2 id="status-heading">Environment Status</h2>
+        <ul class="status-list">
+          <li>
+            <span class="status-label">Frontend Runtime:</span>
+            <span id="frontend-status" class="status-badge pending">Initializing...</span>
+          </li>
+          <li>
+            <span class="status-label">API Health Endpoint:</span>
+            <span id="api-status" class="status-badge pending">Checking...</span>
+          </li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
