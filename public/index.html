@@ -9,111 +9,194 @@
 <body>
   <div class="container">
     <header class="app-header">
-      <h1 class="app-title">StockPilot</h1>
-      <p class="app-subtitle">Full-stack inventory intelligence platform</p>
+      <div class="header-content">
+        <div>
+          <h1 class="app-title">StockPilot</h1>
+          <p class="app-subtitle">Full-stack inventory intelligence platform</p>
+        </div>
+        <div id="header-user-status" class="hidden">
+          <span id="header-user-email" class="header-email"></span>
+          <button id="btn-header-logout" class="btn btn-sm btn-outline">Log Out</button>
+        </div>
+      </div>
     </header>
 
     <main class="content">
-      <!-- Environment & API Status Card -->
+      <!-- System Status Bar -->
       <section class="card mb-4" aria-labelledby="status-heading">
-        <h2 id="status-heading">System Status</h2>
-        <ul class="status-list">
+        <h2 id="status-heading" class="sr-only">System Status</h2>
+        <ul class="status-list horizontal">
           <li>
-            <span class="status-label">Frontend Runtime:</span>
+            <span class="status-label">Runtime:</span>
             <span id="frontend-status" class="status-badge pending">Initializing...</span>
           </li>
           <li>
-            <span class="status-label">API Health Endpoint:</span>
+            <span class="status-label">API Health:</span>
             <span id="api-status" class="status-badge pending">Checking...</span>
           </li>
           <li>
-            <span class="status-label">Auth Session:</span>
-            <span id="auth-status-badge" class="status-badge pending">Checking session...</span>
+            <span class="status-label">Session:</span>
+            <span id="auth-status-badge" class="status-badge pending">Checking...</span>
           </li>
         </ul>
       </section>
 
-      <!-- Authentication Container -->
-      <section class="card" aria-labelledby="auth-heading">
-        <h2 id="auth-heading" class="sr-only">Authentication</h2>
+      <!-- Alert Messages Banner -->
+      <div id="global-alert" class="alert hidden" role="alert"></div>
 
-        <!-- Alert messages banner -->
-        <div id="auth-alert" class="alert hidden" role="alert"></div>
+      <!-- VIEW 1: Authentication Container (Sign In / Register) -->
+      <section id="auth-section" class="card">
+        <h2 class="card-title">Welcome to StockPilot</h2>
+        <p class="card-description">Sign in or create an account to access your inventory workspace.</p>
 
-        <!-- Unauthenticated Form Section -->
-        <div id="auth-forms-container">
-          <div class="tabs" role="tablist">
-            <button id="tab-login" class="tab-btn active" role="tab" aria-selected="true" aria-controls="login-panel">Sign In</button>
-            <button id="tab-register" class="tab-btn" role="tab" aria-selected="false" aria-controls="register-panel">Create Account</button>
+        <div class="tabs" role="tablist">
+          <button id="tab-login" class="tab-btn active" role="tab" aria-selected="true" aria-controls="login-panel">Sign In</button>
+          <button id="tab-register" class="tab-btn" role="tab" aria-selected="false" aria-controls="register-panel">Create Account</button>
+        </div>
+
+        <!-- Sign In Form -->
+        <div id="login-panel" role="tabpanel" aria-labelledby="tab-login">
+          <form id="login-form" novalidate>
+            <div class="form-group">
+              <label for="login-email">Email Address</label>
+              <input type="email" id="login-email" name="email" required autocomplete="email" placeholder="name@example.com">
+            </div>
+            <div class="form-group">
+              <label for="login-password">Password</label>
+              <input type="password" id="login-password" name="password" required autocomplete="current-password" placeholder="••••••••">
+            </div>
+            <button type="submit" id="login-submit-btn" class="btn btn-primary">Sign In</button>
+          </form>
+        </div>
+
+        <!-- Register Form -->
+        <div id="register-panel" class="hidden" role="tabpanel" aria-labelledby="tab-register">
+          <form id="register-form" novalidate>
+            <div class="form-group">
+              <label for="register-email">Email Address</label>
+              <input type="email" id="register-email" name="email" required autocomplete="email" placeholder="name@example.com">
+            </div>
+            <div class="form-group">
+              <label for="register-password">Password (minimum 6 characters)</label>
+              <input type="password" id="register-password" name="password" required minlength="6" autocomplete="new-password" placeholder="••••••••">
+            </div>
+            <div class="form-group">
+              <label for="register-confirm-password">Confirm Password</label>
+              <input type="password" id="register-confirm-password" name="confirmPassword" required minlength="6" autocomplete="new-password" placeholder="••••••••">
+            </div>
+            <button type="submit" id="register-submit-btn" class="btn btn-primary">Create Account</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- VIEW 2: Business Onboarding Section (Shown when user has no business) -->
+      <section id="onboarding-section" class="card hidden" aria-labelledby="onboarding-heading">
+        <div class="card-header-badge">
+          <span class="badge-step">Step 1 of 1</span>
+          <span class="badge-tag">Setup</span>
+        </div>
+        <h2 id="onboarding-heading" class="card-title">Set Up Your Business Workspace</h2>
+        <p class="card-description">Create your business organization to begin managing products, suppliers, and inventory intelligence.</p>
+
+        <form id="onboarding-form" novalidate>
+          <div class="form-group">
+            <label for="biz-name">Business Name <span class="required">*</span></label>
+            <input type="text" id="biz-name" name="name" required placeholder="e.g. Apex Retailers" maxlength="100">
+            <span class="field-hint">The legal or operating trade name for your business.</span>
           </div>
 
-          <!-- Sign In Form -->
-          <div id="login-panel" role="tabpanel" aria-labelledby="tab-login">
-            <form id="login-form" novalidate>
-              <div class="form-group">
-                <label for="login-email">Email Address</label>
-                <input type="email" id="login-email" name="email" required autocomplete="email" placeholder="name@example.com">
-              </div>
-              <div class="form-group">
-                <label for="login-password">Password</label>
-                <input type="password" id="login-password" name="password" required autocomplete="current-password" placeholder="••••••••">
-              </div>
-              <button type="submit" id="login-submit-btn" class="btn btn-primary">Sign In</button>
-            </form>
+          <div class="form-row">
+            <div class="form-group form-col">
+              <label for="biz-industry">Industry <span class="required">*</span></label>
+              <select id="biz-industry" name="industry" required>
+                <option value="" disabled selected>Select an industry...</option>
+                <option value="Retail & Apparel">Retail & Apparel</option>
+                <option value="Grocery & Supermarket">Grocery & Supermarket</option>
+                <option value="Electronics & Gadgets">Electronics & Gadgets</option>
+                <option value="Food & Beverage">Food & Beverage</option>
+                <option value="Pharmaceuticals & Health">Pharmaceuticals & Health</option>
+                <option value="Hardware & Building Supplies">Hardware & Building Supplies</option>
+                <option value="Manufacturing & Wholesale">Manufacturing & Wholesale</option>
+                <option value="Other">Other (Specify below)</option>
+              </select>
+            </div>
+
+            <div class="form-group form-col">
+              <label for="biz-currency">Operating Currency <span class="required">*</span></label>
+              <select id="biz-currency" name="currency" required>
+                <option value="INR" selected>INR (₹) - Indian Rupee</option>
+                <option value="USD">USD ($) - US Dollar</option>
+                <option value="EUR">EUR (€) - Euro</option>
+                <option value="GBP">GBP (£) - British Pound</option>
+                <option value="AED">AED (د.إ) - UAE Dirham</option>
+                <option value="SGD">SGD (S$) - Singapore Dollar</option>
+                <option value="CAD">CAD ($) - Canadian Dollar</option>
+                <option value="AUD">AUD ($) - Australian Dollar</option>
+              </select>
+            </div>
           </div>
 
-          <!-- Register Form -->
-          <div id="register-panel" class="hidden" role="tabpanel" aria-labelledby="tab-register">
-            <form id="register-form" novalidate>
-              <div class="form-group">
-                <label for="register-email">Email Address</label>
-                <input type="email" id="register-email" name="email" required autocomplete="email" placeholder="name@example.com">
-              </div>
-              <div class="form-group">
-                <label for="register-password">Password (minimum 6 characters)</label>
-                <input type="password" id="register-password" name="password" required minlength="6" autocomplete="new-password" placeholder="••••••••">
-              </div>
-              <div class="form-group">
-                <label for="register-confirm-password">Confirm Password</label>
-                <input type="password" id="register-confirm-password" name="confirmPassword" required minlength="6" autocomplete="new-password" placeholder="••••••••">
-              </div>
-              <button type="submit" id="register-submit-btn" class="btn btn-primary">Create Account</button>
-            </form>
+          <!-- Custom Industry input (shown only when Other is selected) -->
+          <div id="biz-industry-custom-group" class="form-group hidden">
+            <label for="biz-industry-custom">Specify Industry <span class="required">*</span></label>
+            <input type="text" id="biz-industry-custom" name="customIndustry" placeholder="e.g. Automotive Spare Parts" maxlength="50">
+          </div>
+
+          <div class="form-group">
+            <label for="biz-location">Location <span class="optional">(Optional)</span></label>
+            <input type="text" id="biz-location" name="location" placeholder="e.g. Bangalore, Karnataka" maxlength="150">
+            <span class="field-hint">City, region, or primary warehouse address.</span>
+          </div>
+
+          <button type="submit" id="onboarding-submit-btn" class="btn btn-primary btn-lg">
+            Create Business Workspace
+          </button>
+        </form>
+      </section>
+
+      <!-- VIEW 3: Business Workspace (Shown when business exists) -->
+      <section id="workspace-section" class="card hidden" aria-labelledby="workspace-heading">
+        <div class="workspace-header">
+          <div>
+            <div class="workspace-eyebrow">Active Workspace</div>
+            <h2 id="workspace-name" class="workspace-title">-</h2>
+          </div>
+          <div class="workspace-badges">
+            <span id="workspace-role-badge" class="status-badge success">Owner</span>
           </div>
         </div>
 
-        <!-- Authenticated Profile Section -->
-        <div id="auth-user-container" class="hidden">
-          <div class="user-profile-header">
-            <h3>Active Session</h3>
-            <span class="status-badge success">Authenticated</span>
+        <div class="workspace-meta-grid">
+          <div class="meta-item">
+            <span class="meta-label">Industry</span>
+            <span id="workspace-industry" class="meta-value">-</span>
           </div>
+          <div class="meta-item">
+            <span class="meta-label">Location</span>
+            <span id="workspace-location" class="meta-value">-</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Currency</span>
+            <span id="workspace-currency" class="meta-value">-</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Tenant ID</span>
+            <span id="workspace-id" class="meta-value mono">-</span>
+          </div>
+        </div>
 
-          <div class="profile-details">
-            <div class="detail-row">
-              <span class="detail-label">User Email:</span>
-              <span id="profile-email" class="detail-value">-</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">User ID (Supabase Auth):</span>
-              <span id="profile-id" class="detail-value mono">-</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Last Sign In:</span>
-              <span id="profile-last-login" class="detail-value">-</span>
-            </div>
-          </div>
+        <div class="workspace-notice">
+          <p><strong>Workspace Ready:</strong> Your multi-tenant organization is active and protected by Supabase Row Level Security. All business records, products, and movements are scoped strictly to this workspace.</p>
+        </div>
 
-          <div class="auth-actions">
-            <button id="btn-test-rls" class="btn btn-secondary">Verify RLS Database Access</button>
-            <button id="btn-logout" class="btn btn-danger">Log Out</button>
-          </div>
+        <div class="workspace-actions">
+          <button id="btn-verify-workspace-rls" class="btn btn-secondary">Test Workspace RLS Query</button>
+          <button id="btn-workspace-logout" class="btn btn-outline">Log Out</button>
+        </div>
 
-          <!-- RLS Verification Output Box -->
-          <div id="rls-output-container" class="rls-output-box hidden">
-            <h4>RLS Verification Result:</h4>
-            <pre id="rls-output-text">Querying...</pre>
-          </div>
+        <div id="workspace-rls-output" class="rls-output-box hidden">
+          <h4>Live Tenant Query Output:</h4>
+          <pre id="workspace-rls-json">Loading...</pre>
         </div>
       </section>
     </main>

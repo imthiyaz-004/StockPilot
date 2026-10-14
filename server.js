@@ -11,6 +11,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 const authRouter = require('./routes/auth');
+const businessesRouter = require('./routes/businesses');
 
 // API health endpoint
 app.get('/api/health', (req, res) => {
@@ -24,6 +25,9 @@ app.get('/api/health', (req, res) => {
 
 // Authentication routes
 app.use('/api/auth', authRouter);
+
+// Business onboarding and management routes
+app.use('/api/businesses', businessesRouter);
 
 // Catch-all handler for undefined API routes
 app.use('/api', (req, res) => {

@@ -1,87 +1,102 @@
-// StockPilot Client Application & Authentication Controller
+// StockPilot Application & Onboarding Controller
 document.addEventListener('DOMContentLoaded', () => {
-  // Elements: Health & Environment
+  const STORAGE_KEY = 'stockpilot_auth_session';
+
+  // System & Header elements
   const frontendStatusEl = document.getElementById('frontend-status');
   const apiStatusEl = document.getElementById('api-status');
   const authStatusBadge = document.getElementById('auth-status-badge');
+  const headerUserStatus = document.getElementById('header-user-status');
+  const headerUserEmail = document.getElementById('header-user-email');
+  const btnHeaderLogout = document.getElementById('btn-header-logout');
+  const globalAlertEl = document.getElementById('global-alert');
 
-  // Elements: Auth UI containers
-  const authAlertEl = document.getElementById('auth-alert');
-  const authFormsContainer = document.getElementById('auth-forms-container');
-  const authUserContainer = document.getElementById('auth-user-container');
+  // View sections
+  const authSection = document.getElementById('auth-section');
+  const onboardingSection = document.getElementById('onboarding-section');
+  const workspaceSection = document.getElementById('workspace-section');
 
-  // Elements: Tabs & Panels
+  // Auth Form elements
   const tabLogin = document.getElementById('tab-login');
   const tabRegister = document.getElementById('tab-register');
   const loginPanel = document.getElementById('login-panel');
   const registerPanel = document.getElementById('register-panel');
-
-  // Elements: Forms & Buttons
   const loginForm = document.getElementById('login-form');
   const registerForm = document.getElementById('register-form');
   const loginSubmitBtn = document.getElementById('login-submit-btn');
   const registerSubmitBtn = document.getElementById('register-submit-btn');
-  const btnLogout = document.getElementById('btn-logout');
-  const btnTestRls = document.getElementById('btn-test-rls');
 
-  // Elements: User Profile
-  const profileEmail = document.getElementById('profile-email');
-  const profileId = document.getElementById('profile-id');
-  const profileLastLogin = document.getElementById('profile-last-login');
-  const rlsOutputContainer = document.getElementById('rls-output-container');
-  const rlsOutputText = document.getElementById('rls-output-text');
+  // Onboarding Form elements
+  const onboardingForm = document.getElementById('onboarding-form');
+  const onboardingSubmitBtn = document.getElementById('onboarding-submit-btn');
+  const bizIndustrySelect = document.getElementById('biz-industry');
+  const bizIndustryCustomGroup = document.getElementById('biz-industry-custom-group');
+  const bizIndustryCustomInput = document.getElementById('biz-industry-custom');
 
-  const STORAGE_KEY = 'stockpilot_auth_session';
+  // Workspace elements
+  const workspaceName = document.getElementById('workspace-name');
+  const workspaceRoleBadge = document.getElementById('workspace-role-badge');
+  const workspaceIndustry = document.getElementById('workspace-industry');
+  const workspaceLocation = document.getElementById('workspace-location');
+  const workspaceCurrency = document.getElementById('workspace-currency');
+  const workspaceId = document.getElementById('workspace-id');
+  const btnVerifyWorkspaceRls = document.getElementById('btn-verify-workspace-rls');
+  const btnWorkspaceLogout = document.getElementById('btn-workspace-logout');
+  const workspaceRlsOutput = document.getElementById('workspace-rls-output');
+  const workspaceRlsJson = document.getElementById('workspace-rls-json');
 
-  // 1. Confirm frontend runtime
+  let activeSession = null;
+  let activeBusiness = null;
+
+  // Initialize runtime check
   if (frontendStatusEl) {
     frontendStatusEl.textContent = 'Active';
     frontendStatusEl.className = 'status-badge success';
   }
 
-  // 2. Check API health
+  // 1. Check API Health
   checkApiHealth();
 
-  // 3. Initialize Auth State
-  restoreSession();
+  // 2. Check Session & Initialize View
+  initAppSession();
 
   // =========================================================================
-  // TAB SWITCHING
+  // VIEW ROUTING & STATE HELPERS
   // =========================================================================
-  tabLogin.addEventListener('click', () => switchTab('login'));
-  tabRegister.addEventListener('click', () => switchTab('register'));
-
-  function switchTab(tab) {
+  function showView(view) {
     clearAlert();
-    if (tab === 'login') {
-      tabLogin.classList.add('active');
-      tabLogin.setAttribute('aria-selected', 'true');
-      tabRegister.classList.remove('active');
-      tabRegister.setAttribute('aria-selected', 'false');
-      loginPanel.classList.remove('hidden');
-      registerPanel.classList.add('hidden');
-    } else {
-      tabRegister.classList.add('active');
-      tabRegister.setAttribute('aria-selected', 'true');
-      tabLogin.classList.remove('active');
-      tabLogin.setAttribute('aria-selected', 'false');
-      registerPanel.classList.remove('hidden');
-      loginPanel.classList.add('hidden');
+    authSection.classList.add('hidden');
+    onboardingSection.classList.add('hidden');
+    workspaceSection.classList.add('hidden');
+
+    if (view === 'auth') {
+      authSection.classList.remove('hidden');
+      headerUserStatus.classList.add('hidden');
+      authStatusBadge.textContent = 'Unauthenticated';
+      authStatusBadge.className = 'status-badge pending';
+    } else if (view === 'onboarding') {
+      onboardingSection.classList.remove('hidden');
+      headerUserStatus.classList.remove('hidden');
+      authStatusBadge.textContent = 'Setup Required';
+      authStatusBadge.className = 'status-badge pending';
+    } else if (view === 'workspace') {
+      workspaceSection.classList.remove('hidden');
+      headerUserStatus.classList.remove('hidden');
+      authStatusBadge.textContent = 'Workspace Active';
+      authStatusBadge.className = 'status-badge success';
     }
   }
 
-  // =========================================================================
-  // ALERT BANNER HELPER
-  // =========================================================================
   function showAlert(message, type = 'error') {
-    authAlertEl.textContent = message;
-    authAlertEl.className = `alert alert-${type}`;
-    authAlertEl.classList.remove('hidden');
+    globalAlertEl.textContent = message;
+    globalAlertEl.className = `alert alert-${type}`;
+    globalAlertEl.classList.remove('hidden');
+    globalAlertEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
   function clearAlert() {
-    authAlertEl.textContent = '';
-    authAlertEl.className = 'alert hidden';
+    globalAlertEl.textContent = '';
+    globalAlertEl.className = 'alert hidden';
   }
 
   // =========================================================================
@@ -89,23 +104,22 @@ document.addEventListener('DOMContentLoaded', () => {
   // =========================================================================
   function checkApiHealth() {
     fetch('/api/health')
-      .then((res) => {
+      .then(res => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
       })
-      .then((data) => {
+      .then(data => {
         apiStatusEl.textContent = `Online (${data.status})`;
         apiStatusEl.className = 'status-badge success';
       })
-      .catch((err) => {
+      .catch(() => {
         apiStatusEl.textContent = 'Offline';
         apiStatusEl.className = 'status-badge error';
-        console.error('API health check error:', err);
       });
   }
 
   // =========================================================================
-  // SESSION STORAGE & RESTORATION
+  // SESSION STORAGE & INITIALIZATION
   // =========================================================================
   function getStoredSession() {
     try {
@@ -119,70 +133,123 @@ document.addEventListener('DOMContentLoaded', () => {
   function saveSession(session) {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+      activeSession = session;
     } catch (err) {
-      console.error('Failed to save session to localStorage:', err);
+      console.error('Failed to save session:', err);
     }
   }
 
   function clearStoredSession() {
     localStorage.removeItem(STORAGE_KEY);
+    activeSession = null;
+    activeBusiness = null;
   }
 
-  async function restoreSession() {
+  async function initAppSession() {
     const session = getStoredSession();
     if (!session || !session.access_token) {
-      renderUnauthenticated();
+      showView('auth');
       return;
     }
 
+    activeSession = session;
     authStatusBadge.textContent = 'Verifying...';
     authStatusBadge.className = 'status-badge pending';
 
     try {
       const res = await fetch('/api/auth/me', {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`
-        }
+        headers: { Authorization: `Bearer ${session.access_token}` }
       });
 
-      if (!res.ok) {
-        throw new Error('Session expired or invalid');
-      }
+      if (!res.ok) throw new Error('Session invalid or expired');
 
       const data = await res.json();
-      renderAuthenticated(data.user);
+      headerUserEmail.textContent = data.user.email || '';
+
+      // Check whether user has an existing business
+      await loadUserBusiness(session.access_token);
     } catch (err) {
-      console.warn('Session verification failed, clearing stored token:', err.message);
+      console.warn('Session verification failed, resetting to sign in:', err.message);
       clearStoredSession();
-      renderUnauthenticated();
+      showView('auth');
     }
   }
 
-  function renderAuthenticated(user) {
-    authStatusBadge.textContent = 'Authenticated';
-    authStatusBadge.className = 'status-badge success';
+  // =========================================================================
+  // BUSINESS LOADER
+  // =========================================================================
+  async function loadUserBusiness(token) {
+    try {
+      const res = await fetch('/api/businesses/mine', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
-    profileEmail.textContent = user.email || 'N/A';
-    profileId.textContent = user.id || 'N/A';
-    profileLastLogin.textContent = user.last_sign_in_at
-      ? new Date(user.last_sign_in_at).toLocaleString()
-      : 'First session';
+      if (!res.ok) {
+        throw new Error('Failed to query user businesses');
+      }
 
-    authFormsContainer.classList.add('hidden');
-    authUserContainer.classList.remove('hidden');
-    rlsOutputContainer.classList.add('hidden');
+      const data = await res.json();
+
+      if (data.hasBusiness && data.primaryBusiness) {
+        activeBusiness = data.primaryBusiness;
+        renderWorkspace(activeBusiness);
+        showView('workspace');
+      } else {
+        showView('onboarding');
+      }
+    } catch (err) {
+      console.error('Error loading business:', err);
+      showView('onboarding');
+    }
   }
 
-  function renderUnauthenticated() {
-    authStatusBadge.textContent = 'Unauthenticated';
-    authStatusBadge.className = 'status-badge pending';
+  function renderWorkspace(business) {
+    workspaceName.textContent = business.name || 'Unnamed Business';
+    workspaceRoleBadge.textContent = (business.role || 'Owner').toUpperCase();
+    workspaceIndustry.textContent = business.industry || 'Not Specified';
+    workspaceLocation.textContent = business.location || 'Not Specified';
+    workspaceCurrency.textContent = `${business.currency || 'INR'} ${getCurrencySymbol(business.currency)}`;
+    workspaceId.textContent = business.id || '-';
+    workspaceRlsOutput.classList.add('hidden');
+  }
 
-    authUserContainer.classList.add('hidden');
-    authFormsContainer.classList.remove('hidden');
+  function getCurrencySymbol(code) {
+    switch (code) {
+      case 'INR': return '(₹)';
+      case 'USD': return '($)';
+      case 'EUR': return '(€)';
+      case 'GBP': return '(£)';
+      case 'AED': return '(د.إ)';
+      case 'SGD': return '(S$)';
+      default: return '';
+    }
   }
 
   // =========================================================================
-  // SIGN IN
+  // AUTH TABS
+  // =========================================================================
+  tabLogin.addEventListener('click', () => {
+    tabLogin.classList.add('active');
+    tabLogin.setAttribute('aria-selected', 'true');
+    tabRegister.classList.remove('active');
+    tabRegister.setAttribute('aria-selected', 'false');
+    loginPanel.classList.remove('hidden');
+    registerPanel.classList.add('hidden');
+    clearAlert();
+  });
+
+  tabRegister.addEventListener('click', () => {
+    tabRegister.classList.add('active');
+    tabRegister.setAttribute('aria-selected', 'true');
+    tabLogin.classList.remove('active');
+    tabLogin.setAttribute('aria-selected', 'false');
+    registerPanel.classList.remove('hidden');
+    loginPanel.classList.add('hidden');
+    clearAlert();
+  });
+
+  // =========================================================================
+  // SIGN IN SUBMISSION
   // =========================================================================
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -192,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const password = document.getElementById('login-password').value;
 
     if (!email || !password) {
-      showAlert('Please enter both email and password.');
+      showAlert('Please enter both your email address and password.');
       return;
     }
 
@@ -212,17 +279,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (res.status === 403) {
           showAlert(data.error || 'Email not verified. Please check your inbox.', 'warning');
         } else {
-          showAlert(data.error || 'Failed to sign in. Please check your credentials.', 'error');
+          showAlert(data.error || 'Failed to sign in. Please verify your credentials.', 'error');
         }
         return;
       }
 
       saveSession(data.session);
-      renderAuthenticated(data.user);
+      headerUserEmail.textContent = data.user.email || '';
       loginForm.reset();
-      showAlert('Signed in successfully!', 'success');
+
+      // Check onboarding status
+      await loadUserBusiness(data.session.access_token);
     } catch (err) {
-      showAlert('Network error occurred during login. Please try again.');
+      showAlert('A network error occurred. Please try again.');
       console.error(err);
     } finally {
       loginSubmitBtn.disabled = false;
@@ -231,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // =========================================================================
-  // SIGN UP
+  // SIGN UP SUBMISSION
   // =========================================================================
   registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -245,12 +314,10 @@ document.addEventListener('DOMContentLoaded', () => {
       showAlert('Please enter an email address.');
       return;
     }
-
     if (!password || password.length < 6) {
       showAlert('Password must be at least 6 characters long.');
       return;
     }
-
     if (password !== confirmPassword) {
       showAlert('Passwords do not match.');
       return;
@@ -269,26 +336,23 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await res.json();
 
       if (!res.ok) {
-        showAlert(data.error || 'Failed to create account.', 'error');
+        showAlert(data.error || 'Registration failed.', 'error');
         return;
       }
 
       if (data.status === 'unverified') {
         registerForm.reset();
-        switchTab('login');
+        tabLogin.click();
         document.getElementById('login-email').value = email;
-        showAlert(
-          'Account created! A confirmation email has been sent. Please confirm your email before signing in.',
-          'warning'
-        );
+        showAlert('Account registered! Please check your email to verify your account before logging in.', 'warning');
       } else if (data.status === 'authenticated' && data.session) {
         saveSession(data.session);
-        renderAuthenticated(data.user);
+        headerUserEmail.textContent = data.user.email || '';
         registerForm.reset();
-        showAlert('Account created and logged in!', 'success');
+        showView('onboarding');
       }
     } catch (err) {
-      showAlert('Network error occurred during registration. Please try again.');
+      showAlert('A network error occurred during registration.');
       console.error(err);
     } finally {
       registerSubmitBtn.disabled = false;
@@ -297,75 +361,141 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // =========================================================================
-  // LOGOUT
+  // INDUSTRY "OTHER" TOGGLE
   // =========================================================================
-  btnLogout.addEventListener('click', async () => {
+  bizIndustrySelect.addEventListener('change', () => {
+    if (bizIndustrySelect.value === 'Other') {
+      bizIndustryCustomGroup.classList.remove('hidden');
+      bizIndustryCustomInput.required = true;
+      bizIndustryCustomInput.focus();
+    } else {
+      bizIndustryCustomGroup.classList.add('hidden');
+      bizIndustryCustomInput.required = false;
+      bizIndustryCustomInput.value = '';
+    }
+  });
+
+  // =========================================================================
+  // BUSINESS ONBOARDING SUBMISSION
+  // =========================================================================
+  onboardingForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearAlert();
+
+    const session = getStoredSession();
+    if (!session || !session.access_token) {
+      showAlert('Session expired. Please sign in again.');
+      showView('auth');
+      return;
+    }
+
+    const name = document.getElementById('biz-name').value.trim();
+    let industry = bizIndustrySelect.value;
+    if (industry === 'Other') {
+      industry = bizIndustryCustomInput.value.trim();
+    }
+    const location = document.getElementById('biz-location').value.trim();
+    const currency = document.getElementById('biz-currency').value;
+
+    if (!name || name.length < 2) {
+      showAlert('Please enter a valid business name (minimum 2 characters).');
+      return;
+    }
+
+    if (!industry || industry.length < 2) {
+      showAlert('Please select or specify your business industry.');
+      return;
+    }
+
+    onboardingSubmitBtn.disabled = true;
+    onboardingSubmitBtn.textContent = 'Creating Workspace...';
+
+    try {
+      const res = await fetch('/api/businesses', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify({ name, industry, location, currency })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        showAlert(data.error || 'Failed to create business workspace.', 'error');
+        return;
+      }
+
+      activeBusiness = data.business;
+      onboardingForm.reset();
+      bizIndustryCustomGroup.classList.add('hidden');
+
+      renderWorkspace(activeBusiness);
+      showView('workspace');
+      showAlert('Business workspace created successfully!', 'success');
+    } catch (err) {
+      showAlert('A network error occurred while setting up your workspace.');
+      console.error(err);
+    } finally {
+      onboardingSubmitBtn.disabled = false;
+      onboardingSubmitBtn.textContent = 'Create Business Workspace';
+    }
+  });
+
+  // =========================================================================
+  // WORKSPACE RLS VERIFICATION QUERY
+  // =========================================================================
+  btnVerifyWorkspaceRls.addEventListener('click', async () => {
+    const session = getStoredSession();
+    if (!session || !session.access_token) {
+      showAlert('Session expired. Please sign in again.');
+      showView('auth');
+      return;
+    }
+
+    workspaceRlsOutput.classList.remove('hidden');
+    workspaceRlsJson.textContent = 'Executing authenticated query against Supabase PostgreSQL...';
+    btnVerifyWorkspaceRls.disabled = true;
+
+    try {
+      const res = await fetch('/api/businesses/mine', {
+        headers: { Authorization: `Bearer ${session.access_token}` }
+      });
+
+      const data = await res.json();
+      workspaceRlsJson.textContent = JSON.stringify(data, null, 2);
+    } catch (err) {
+      workspaceRlsJson.textContent = `Error executing RLS query: ${err.message}`;
+    } finally {
+      btnVerifyWorkspaceRls.disabled = false;
+    }
+  });
+
+  // =========================================================================
+  // LOGOUT HANDLER
+  // =========================================================================
+  async function handleLogout() {
     const session = getStoredSession();
     clearAlert();
-    btnLogout.disabled = true;
 
     try {
       if (session && session.access_token) {
         await fetch('/api/auth/logout', {
           method: 'POST',
-          headers: {
-            Authorization: `Bearer ${session.access_token}`
-          }
+          headers: { Authorization: `Bearer ${session.access_token}` }
         });
       }
     } catch (err) {
       console.warn('Logout network error (clearing local session anyway):', err);
     } finally {
       clearStoredSession();
-      renderUnauthenticated();
-      btnLogout.disabled = false;
+      headerUserEmail.textContent = '';
+      showView('auth');
       showAlert('You have been logged out.', 'success');
     }
-  });
+  }
 
-  // =========================================================================
-  // TEST RLS ACCESS (AUTHENTICATED SCOPED QUERY)
-  // =========================================================================
-  btnTestRls.addEventListener('click', async () => {
-    const session = getStoredSession();
-    if (!session || !session.access_token) {
-      showAlert('No active session. Please sign in again.');
-      return;
-    }
-
-    rlsOutputContainer.classList.remove('hidden');
-    rlsOutputText.textContent = 'Querying database under your authenticated user context...';
-    btnTestRls.disabled = true;
-
-    try {
-      const res = await fetch('/api/auth/test-rls', {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`
-        }
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        rlsOutputText.textContent = JSON.stringify(data, null, 2);
-        return;
-      }
-
-      rlsOutputText.textContent = JSON.stringify(
-        {
-          status: data.status,
-          message: data.message,
-          verifiedUserId: data.verifiedUserId,
-          accessibleBusinessesCount: data.accessibleBusinessesCount,
-          businesses: data.businesses
-        },
-        null,
-        2
-      );
-    } catch (err) {
-      rlsOutputText.textContent = `Error querying RLS endpoint: ${err.message}`;
-    } finally {
-      btnTestRls.disabled = false;
-    }
-  });
+  btnHeaderLogout.addEventListener('click', handleLogout);
+  btnWorkspaceLogout.addEventListener('click', handleLogout);
 });

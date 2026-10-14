@@ -27,7 +27,9 @@ $$ LANGUAGE plpgsql;
 CREATE TABLE public.businesses (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL CHECK (char_length(trim(name)) > 0),
-  currency VARCHAR(3) NOT NULL DEFAULT 'USD',
+  industry TEXT,
+  location TEXT,
+  currency VARCHAR(3) NOT NULL DEFAULT 'INR',
   owner_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE RESTRICT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
@@ -227,6 +229,21 @@ CREATE TRIGGER trg_sales_updated_at
 CREATE TRIGGER trg_purchases_updated_at
   BEFORE UPDATE ON public.purchases
   FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
+-- Auto-assign creator as owner in business_members table
+CREATE OR REPLACE FUNCTION public.handle_new_business()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.business_members (business_id, user_id, role)
+  VALUES (NEW.id, NEW.owner_id, 'owner')
+  ON CONFLICT (business_id, user_id) DO UPDATE SET role = 'owner';
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER trg_businesses_auto_owner_member
+  AFTER INSERT ON public.businesses
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_business();
 
 -- ============================================================================
 -- 5. PERFORMANCE INDEXES
