@@ -10,6 +10,8 @@ app.use(express.json());
 // Serve static assets from public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
+const authRouter = require('./routes/auth');
+
 // API health endpoint
 app.get('/api/health', (req, res) => {
   res.status(200).json({
@@ -19,6 +21,9 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
+
+// Authentication routes
+app.use('/api/auth', authRouter);
 
 // Catch-all handler for undefined API routes
 app.use('/api', (req, res) => {
