@@ -1,8 +1,37 @@
 const express = require('express');
+const { rateLimit } = require('express-rate-limit');
 const { getSupabaseClient, createUserScopedClient } = require('../services/supabaseClient');
 const { requireAuth } = require('../middleware/auth');
 
 const router = express.Router();
+
+/**
+ * Authentication Rate Limiter
+ * Guards login and registration endpoints against credential stuffing and brute force.
+ * Configurable via AUTH_RATE_LIMIT_WINDOW_MS and AUTH_RATE_LIMIT_MAX.
+ * Defaults: 15-minute window, max 10 requests per window.
+ */
+const authLimiter = rateLimit({
+  windowMs: process.env.AUTH_RATE_LIMIT_WINDOW_MS
+    ? parseInt(process.env.AUTH_RATE_LIMIT_WINDOW_MS, 10)
+    : 15 * 60 * 1000,
+  limit: (req) => {
+    if (process.env.AUTH_RATE_LIMIT_MAX) {
+      const parsed = parseInt(process.env.AUTH_RATE_LIMIT_MAX, 10);
+      if (!isNaN(parsed) && parsed > 0) return parsed;
+    }
+    return 10;
+  },
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
+  handler: (req, res /*, next, options */) => {
+    return res.status(429).json({
+      error: 'Too many authentication attempts. Please try again later.',
+      code: 'TOO_MANY_REQUESTS'
+    });
+  }
+});
 
 /**
  * Validate standard email format
@@ -16,7 +45,7 @@ function isValidEmail(email) {
  * Handles user sign-up using Supabase Auth.
  * Passwords are never stored in our own database.
  */
-router.post('/register', async (req, res, next) => {
+router.post('/register', authLimiter, async (req, res, next) => {
   try {
     const { email, password } = req.body || {};
 
@@ -73,7 +102,7 @@ router.post('/register', async (req, res, next) => {
  * POST /api/auth/login
  * Authenticates user credentials via Supabase Auth.
  */
-router.post('/login', async (req, res, next) => {
+router.post('/login', authLimiter, async (req, res, next) => {
   try {
     const { email, password } = req.body || {};
 
@@ -200,4 +229,5 @@ router.get('/test-rls', requireAuth, async (req, res, next) => {
   }
 });
 
+router.authLimiter = authLimiter;
 module.exports = router;

@@ -534,4 +534,50 @@ router.delete('/:id', async (req, res, next) => {
   }
 });
 
+/**
+ * GET /api/products/:id/movements
+ * Returns the audit trail of inventory movements for a product.
+ */
+router.get('/:id/movements', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    if (!UUID_REGEX.test(id)) {
+      return res.status(400).json({ error: 'Invalid product ID format.' });
+    }
+
+    const { data: product, error: prodErr } = await req.supabase
+      .from('products')
+      .select('id, business_id, name, current_stock')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (prodErr || !product) {
+      return res.status(404).json({ error: 'Product not found or access denied.' });
+    }
+
+    const { data: movements, error: movErr } = await req.supabase
+      .from('inventory_movements')
+      .select('id, movement_type, quantity_change, reference_type, reference_id, reason, created_by, created_at')
+      .eq('product_id', id)
+      .order('created_at', { ascending: false });
+
+    if (movErr) {
+      return res.status(500).json({ error: 'Failed to retrieve movements.', details: movErr.message });
+    }
+
+    return res.status(200).json({
+      status: 'ok',
+      product: {
+        id: product.id,
+        name: product.name,
+        current_stock: Number(product.current_stock)
+      },
+      movements: movements || []
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;

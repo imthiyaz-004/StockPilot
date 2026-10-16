@@ -20,3 +20,6 @@ Thumbs.db
 # Editor configurations
 .vscode/
 .idea/
+
+# Test artifacts
+scripts/screenshot_*.png

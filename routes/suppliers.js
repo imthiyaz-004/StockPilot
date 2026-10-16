@@ -8,15 +8,38 @@ router.use(requireAuth);
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 /**
+ * Helper to verify user membership in a business.
+ * Prevents unauthorized or cross-business operations.
+ */
+async function verifyBusinessMembership(supabase, businessId) {
+  if (!businessId || !UUID_REGEX.test(businessId)) {
+    return { authorized: false, error: 'Invalid or missing business ID format.' };
+  }
+
+  const { data: business, error } = await supabase
+    .from('businesses')
+    .select('id, name, currency')
+    .eq('id', businessId)
+    .maybeSingle();
+
+  if (error || !business) {
+    return { authorized: false, error: 'Access denied. You do not belong to this business.' };
+  }
+
+  return { authorized: true, business };
+}
+
+/**
  * GET /api/suppliers?businessId=...
  * Lists suppliers for an authorized business.
  */
 router.get('/', async (req, res, next) => {
   try {
-    const { businessId } = req.query;
+    const businessId = req.query.businessId || req.query.business_id;
 
-    if (!businessId || !UUID_REGEX.test(businessId)) {
-      return res.status(400).json({ error: 'Valid business ID is required.' });
+    const authCheck = await verifyBusinessMembership(req.supabase, businessId);
+    if (!authCheck.authorized) {
+      return res.status(403).json({ error: authCheck.error });
     }
 
     const { data: suppliers, error } = await req.supabase
@@ -44,10 +67,12 @@ router.get('/', async (req, res, next) => {
  */
 router.post('/', async (req, res, next) => {
   try {
-    const { business_id, name, contact_name, email, phone } = req.body || {};
+    const { business_id, businessId, name, contact_name, email, phone } = req.body || {};
+    const targetBusinessId = business_id || businessId;
 
-    if (!business_id || !UUID_REGEX.test(business_id)) {
-      return res.status(400).json({ error: 'Valid business ID is required.' });
+    const authCheck = await verifyBusinessMembership(req.supabase, targetBusinessId);
+    if (!authCheck.authorized) {
+      return res.status(403).json({ error: authCheck.error });
     }
 
     if (!name || typeof name !== 'string' || name.trim().length < 2) {
@@ -57,7 +82,7 @@ router.post('/', async (req, res, next) => {
     const { data: supplier, error } = await req.supabase
       .from('suppliers')
       .insert({
-        business_id,
+        business_id: targetBusinessId,
         name: name.trim(),
         contact_name: contact_name ? contact_name.trim() : null,
         email: email ? email.trim() : null,

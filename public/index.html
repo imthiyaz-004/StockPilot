@@ -3,387 +3,2250 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StockPilot - Inventory Intelligence</title>
+  <title>StockPilot // Modern Product-Led Inventory Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-  <div class="container">
-    <header class="app-header">
-      <div class="header-content">
-        <div>
-          <h1 class="app-title">StockPilot</h1>
-          <p class="app-subtitle">Full-stack inventory intelligence platform</p>
+
+  <!-- =========================================================================
+       1. UNIFIED MODERN HEADER & NAVIGATION
+       ========================================================================= -->
+  <header class="site-header" role="banner">
+    <div class="header-container">
+
+      <!-- Brand Logo / Wordmark -->
+      <a href="#/" class="brand-anchor" id="nav-brand-home" aria-label="StockPilot Home">
+        <svg class="brand-emblem-svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="32" height="32" rx="8" fill="#2563EB"/>
+          <!-- Layered prism inventory wings with forward vector -->
+          <path d="M7 11L16 6L25 11L16 16L7 11Z" fill="#FFFFFF" fill-opacity="0.95"/>
+          <path d="M7 16L16 21L25 16" stroke="#93C5FD" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M7 21L16 26L25 21" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="brand-wordmark-wrap">
+          <span class="brand-name">StockPilot</span>
+          <span class="brand-tagline-micro">Inventory OS</span>
         </div>
-        <div id="header-user-status" class="hidden">
-          <span id="header-user-email" class="header-email"></span>
-          <button id="btn-header-logout" class="btn btn-sm btn-outline">Log Out</button>
+      </a>
+
+      <!-- Desktop Product Navigation Links -->
+      <nav class="primary-nav-links" id="primary-nav-links" aria-label="Main Navigation">
+        <a href="#features" class="nav-link-item">Capabilities</a>
+        <a href="#demo-preview" class="nav-link-item">Live Preview</a>
+        <a href="#workflow" class="nav-link-item">How It Works</a>
+        <a href="#advantages" class="nav-link-item">Why StockPilot</a>
+      </nav>
+
+      <!-- Navigation User & Auth Action Area -->
+      <div class="header-actions-wrap">
+
+        <!-- Public Unauthenticated State (Shown by Default) -->
+        <div id="nav-guest-actions" class="header-actions-wrap">
+          <button type="button" id="btn-nav-signin" class="btn-header-signin">Sign in</button>
+          <button type="button" id="btn-nav-getstarted" class="btn-header-cta">
+            <span>Get started free</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Authenticated State (Hidden initially; toggled in JS) -->
+        <div id="header-user-status" class="header-actions-wrap hidden">
+          <div class="header-user-badge">
+            <span class="header-user-dot" title="Authenticated session active"></span>
+            <span id="header-user-email"></span>
+          </div>
+          <button type="button" id="btn-nav-workspace" class="btn-header-cta">Open Workspace →</button>
+          <button type="button" id="btn-header-logout" class="btn-header-signout">Sign Out</button>
+        </div>
+
+        <!-- Mobile Navigation Drawer Toggle -->
+        <button type="button" class="mobile-nav-toggle" id="btn-mobile-nav" aria-label="Toggle Navigation Menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Global Application Notifications / Toast -->
+  <div class="header-container" style="padding-top: 1rem; padding-bottom: 0;">
+    <div id="global-alert" class="global-alert-strip hidden" role="alert"></div>
+  </div>
+
+  <!-- Telemetry Hidden Reference Element (Maintains parity with app.js) -->
+  <div class="hidden">
+    <span id="frontend-status" class="status-badge success">Active</span>
+    <span id="api-status" class="status-badge success">Online</span>
+    <span id="auth-status-badge" class="status-badge success">Ready</span>
+  </div>
+
+  <!-- =========================================================================
+       2. PUBLIC HOMEPAGE (PRODUCT-LED STORYTELLING & LIVE SHOWCASE)
+       ========================================================================= -->
+  <div id="public-home-section" class="public-home-wrapper">
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-inner-container">
+
+        <div class="hero-pill-badge">
+          <span class="hero-pill-sparkle">✦</span>
+          <span>Product-Led Inventory Intelligence for Growing Businesses</span>
+        </div>
+
+        <h1 class="hero-headline">
+          Know your stock.<br>
+          <span class="hero-headline-highlight">Make your next move.</span>
+        </h1>
+
+        <p class="hero-subtitle">
+          StockPilot gives wholesalers, distributors, and retailers one clear workspace to manage catalog levels, execute outgoing sales dispatch, and restock purchase orders with an immutable audit trail.
+        </p>
+
+        <div class="hero-cta-cluster">
+          <button type="button" id="btn-hero-getstarted" class="btn-hero-primary">
+            <span>Start Free Workspace</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+
+          <a href="#demo-preview" class="btn-hero-secondary">
+            <span>Explore Live Interface</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <polyline points="19 12 12 19 5 12"></polyline>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Trust Badges Strip -->
+        <div class="hero-trust-bar">
+          <div class="trust-item">
+            <svg class="trust-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>Real-Time Stock Audits</span>
+          </div>
+          <div class="trust-item">
+            <svg class="trust-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>Automated Sales Depletion</span>
+          </div>
+          <div class="trust-item">
+            <svg class="trust-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>One-Click Purchase Receiving</span>
+          </div>
+          <div class="trust-item">
+            <svg class="trust-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>Zero Vendor Lock-In</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Live Interactive Interface Demonstration (Hero Anchor Visual) -->
+    <section id="demo-preview" class="product-preview-section">
+      <div class="preview-container">
+
+        <div class="preview-shell">
+
+          <!-- Browser Frame Top Bar -->
+          <div class="preview-shell-topbar">
+            <div class="shell-traffic-lights">
+              <span class="shell-light red"></span>
+              <span class="shell-light yellow"></span>
+              <span class="shell-light green"></span>
+            </div>
+            <div class="shell-address-bar">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <span>app.stockpilot.io / workspace / apex-hardware</span>
+            </div>
+            <div class="shell-status-indicator">
+              <span class="pulse-dot"></span>
+              <span>LIVE WORKSPACE</span>
+            </div>
+          </div>
+
+          <!-- Application Workspace Header Inside Preview -->
+          <div class="preview-app-header">
+            <div class="preview-org-box">
+              <div class="preview-org-avatar">AH</div>
+              <div>
+                <div class="preview-org-name">Apex Hardware & Wholesale Co.</div>
+                <div class="preview-org-meta">Active Inventory • Currency: INR (₹) • Owner Role</div>
+              </div>
+            </div>
+
+            <!-- Interactive Module Switcher Inside Preview -->
+            <div class="preview-nav-tabs">
+              <button type="button" class="preview-tab-btn active" id="demo-tab-inventory">Catalog Inventory</button>
+              <button type="button" class="preview-tab-btn" id="demo-tab-sales">Sales Orders</button>
+              <button type="button" class="preview-tab-btn" id="demo-tab-purchases">Procurement POs</button>
+            </div>
+          </div>
+
+          <!-- Metrics Ribbon Preview -->
+          <div class="preview-metrics-strip">
+            <div class="preview-metric-box">
+              <div class="preview-metric-label">Total Inventory Valuation</div>
+              <div class="preview-metric-val blue">₹ 18,45,200.00</div>
+            </div>
+            <div class="preview-metric-box">
+              <div class="preview-metric-label">Catalog SKUs</div>
+              <div class="preview-metric-val">124 Items</div>
+            </div>
+            <div class="preview-metric-box">
+              <div class="preview-metric-label">Active Units on Hand</div>
+              <div class="preview-metric-val">4,890 Units</div>
+            </div>
+            <div class="preview-metric-box">
+              <div class="preview-metric-label">Restock Threshold Alerts</div>
+              <div class="preview-metric-val amber">3 Low Stock</div>
+            </div>
+          </div>
+
+          <!-- High-Fidelity Data Table Inside Preview -->
+          <div class="preview-table-wrap">
+            <table class="preview-data-table">
+              <thead>
+                <tr>
+                  <th>Product & Category</th>
+                  <th>SKU Code</th>
+                  <th style="text-align: right;">Unit Cost</th>
+                  <th style="text-align: right;">Selling Price</th>
+                  <th>On-Hand Level</th>
+                  <th>Inventory Status</th>
+                  <th style="text-align: right;">Valuation</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div style="font-weight: 700;">Precision Tungsten Drill Bit Set</div>
+                    <div style="font-size: 0.76rem; color: var(--color-text-secondary);">Tooling & Machinery • Apex Industrial Ltd</div>
+                  </td>
+                  <td><span class="preview-sku-badge">BIT-TUNG-001</span></td>
+                  <td class="mono tabular-nums" style="text-align: right;">₹ 850.00</td>
+                  <td class="mono tabular-nums" style="text-align: right;">₹ 1,490.00</td>
+                  <td>
+                    <div class="stock-meter-wrap">
+                      <div class="stock-meter-track">
+                        <div class="stock-meter-bar green" style="width: 75%;"></div>
+                      </div>
+                      <span class="mono tabular-nums font-semibold">42</span>
+                      <span class="mono text-muted" style="font-size: 0.75rem;">/ min 15</span>
+                    </div>
+                  </td>
+                  <td><span class="status-pill instock">In Stock</span></td>
+                  <td class="mono tabular-nums font-semibold" style="text-align: right;">₹ 35,700.00</td>
+                </tr>
+                <tr>
+                  <td>
+                    <div style="font-weight: 700;">Industrial Stainless Ball Bearing 6205</div>
+                    <div style="font-size: 0.76rem; color: var(--color-text-secondary);">Bearings & Drive • SKF Precision</div>
+                  </td>
+                  <td><span class="preview-sku-badge">BRG-SS-6205</span></td>
+                  <td class="mono tabular-nums" style="text-align: right;">₹ 320.00</td>
+                  <td class="mono tabular-nums" style="text-align: right;">₹ 590.00</td>
+                  <td>
+                    <div class="stock-meter-wrap">
+                      <div class="stock-meter-track">
+                        <div class="stock-meter-bar yellow" style="width: 20%;"></div>
+                      </div>
+                      <span class="mono tabular-nums font-semibold" style="color: var(--color-warning);">4</span>
+                      <span class="mono text-muted" style="font-size: 0.75rem;">/ min 20</span>
+                    </div>
+                  </td>
+                  <td><span class="status-pill lowstock">Low Stock</span></td>
+                  <td class="mono tabular-nums font-semibold" style="text-align: right;">₹ 1,280.00</td>
+                </tr>
+                <tr>
+                  <td>
+                    <div style="font-weight: 700;">High-Pressure Hydraulic Valve 3/4"</div>
+                    <div style="font-size: 0.76rem; color: var(--color-text-secondary);">Hydraulics & Fluid • HydroTech Imports</div>
+                  </td>
+                  <td><span class="preview-sku-badge">VLV-HYD-034</span></td>
+                  <td class="mono tabular-nums" style="text-align: right;">₹ 2,100.00</td>
+                  <td class="mono tabular-nums" style="text-align: right;">₹ 3,600.00</td>
+                  <td>
+                    <div class="stock-meter-wrap">
+                      <div class="stock-meter-track">
+                        <div class="stock-meter-bar red" style="width: 0%;"></div>
+                      </div>
+                      <span class="mono tabular-nums font-semibold" style="color: var(--color-danger);">0</span>
+                      <span class="mono text-muted" style="font-size: 0.75rem;">/ min 10</span>
+                    </div>
+                  </td>
+                  <td><span class="status-pill outofstock">Out of Stock</span></td>
+                  <td class="mono tabular-nums font-semibold" style="text-align: right;">₹ 0.00</td>
+                </tr>
+                <tr>
+                  <td>
+                    <div style="font-weight: 700;">Synthetic Heavy Machinery Lubricant 5L</div>
+                    <div style="font-size: 0.76rem; color: var(--color-text-secondary);">Chemicals & Fluids • Castrol Industrial</div>
+                  </td>
+                  <td><span class="preview-sku-badge">LUB-SYN-005</span></td>
+                  <td class="mono tabular-nums" style="text-align: right;">₹ 1,200.00</td>
+                  <td class="mono tabular-nums" style="text-align: right;">₹ 1,950.00</td>
+                  <td>
+                    <div class="stock-meter-wrap">
+                      <div class="stock-meter-track">
+                        <div class="stock-meter-bar green" style="width: 90%;"></div>
+                      </div>
+                      <span class="mono tabular-nums font-semibold">88</span>
+                      <span class="mono text-muted" style="font-size: 0.75rem;">/ min 25</span>
+                    </div>
+                  </td>
+                  <td><span class="status-pill instock">In Stock</span></td>
+                  <td class="mono tabular-nums font-semibold" style="text-align: right;">₹ 1,05,600.00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Bottom Demonstration Disclaimer Bar -->
+          <div class="preview-disclaimer-bar">
+            <span>⚡ Demonstration interface reflecting implemented StockPilot database schema and operational logic.</span>
+            <span class="mono" style="font-weight: 600; color: var(--color-primary);">Speed: &lt;80ms transaction response</span>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 1: Real-Time Inventory Visibility -->
+    <section id="features" class="feature-section">
+      <div class="feature-container">
+        <div class="feature-split-grid">
+          <div>
+            <div class="feature-eyebrow-pill">01 // CATALOG VISIBILITY</div>
+            <h2 class="feature-heading">Never run out of high-margin items again.</h2>
+            <p class="feature-description">
+              Stop relying on outdated spreadsheets and manual counts. StockPilot maintains continuous on-hand stock tallies, automatically recalculating inventory valuations whenever shipments arrive or orders ship.
+            </p>
+            <ul class="feature-checklist">
+              <li class="checklist-item">
+                <div class="checklist-icon">✓</div>
+                <div><strong>Dynamic reorder thresholds:</strong> Flag items as Low Stock or Depleted the exact moment on-hand balance drops below safety benchmarks.</div>
+              </li>
+              <li class="checklist-item">
+                <div class="checklist-icon">✓</div>
+                <div><strong>Multi-field search & filtering:</strong> Instant lookup by product name, SKU barcode, category, and real-time stock status.</div>
+              </li>
+              <li class="checklist-item">
+                <div class="checklist-icon">✓</div>
+                <div><strong>Automated valuation ledger:</strong> Total inventory assets calculated instantaneously using verified cost price tracking.</div>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <div class="feature-visual-card">
+              <div class="visual-card-header">
+                <span class="visual-card-title">Live Threshold Warning Engine</span>
+                <span class="status-pill lowstock">Automated Alert</span>
+              </div>
+              <div style="padding: 1rem 0;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.88rem;">
+                  <span><strong>Industrial Stainless Ball Bearing</strong> (SKU: BRG-SS-6205)</span>
+                  <span class="mono tabular-nums" style="color: var(--color-warning); font-weight: 700;">4 on hand</span>
+                </div>
+                <div style="height: 8px; background-color: #E2E8F0; border-radius: 4px; overflow: hidden; margin-bottom: 0.75rem;">
+                  <div style="height: 100%; width: 20%; background-color: var(--color-warning);"></div>
+                </div>
+                <p style="font-size: 0.8rem; color: var(--color-text-secondary); margin-bottom: 1.25rem;">
+                  Safety minimum benchmark is 20 units. Immediate supplier replenishment recommended to prevent assembly line stoppage.
+                </p>
+                <button type="button" class="btn btn-primary btn-sm" style="width: 100%;" id="btn-demo-create-po">
+                  + Generate Vendor Purchase Order
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </header>
+    </section>
 
-    <main class="content">
-      <!-- System Status Bar -->
-      <section class="card mb-4" aria-labelledby="status-heading">
-        <h2 id="status-heading" class="sr-only">System Status</h2>
-        <ul class="status-list horizontal">
-          <li>
-            <span class="status-label">Runtime:</span>
-            <span id="frontend-status" class="status-badge pending">Initializing...</span>
-          </li>
-          <li>
-            <span class="status-label">API Health:</span>
-            <span id="api-status" class="status-badge pending">Checking...</span>
-          </li>
-          <li>
-            <span class="status-label">Session:</span>
-            <span id="auth-status-badge" class="status-badge pending">Checking...</span>
-          </li>
-        </ul>
-      </section>
+    <!-- Section 2: Outgoing Sales Dispatch -->
+    <section class="feature-section alt-bg">
+      <div class="feature-container">
+        <div class="feature-split-grid reversed">
+          <div>
+            <div class="feature-eyebrow-pill">02 // SALES & OUTBOUND DISPATCH</div>
+            <h2 class="feature-heading">Fast multi-item dispatch with verified stock safeguards.</h2>
+            <p class="feature-description">
+              Create customer orders in seconds with real-time on-hand checks. StockPilot guarantees that line items cannot exceed available warehouse stock, eliminating awkward customer cancellations and backorder headaches.
+            </p>
+            <ul class="feature-checklist">
+              <li class="checklist-item">
+                <div class="checklist-icon">✓</div>
+                <div><strong>Atomic stock decrements:</strong> On order completion, inventory balances decrement instantaneously within a single database transaction.</div>
+              </li>
+              <li class="checklist-item">
+                <div class="checklist-icon">✓</div>
+                <div><strong>Multi-line customer invoices:</strong> Combine multiple products with unit prices, quantity checks, and grand totals.</div>
+              </li>
+              <li class="checklist-item">
+                <div class="checklist-icon">✓</div>
+                <div><strong>Searchable dispatch manifests:</strong> Access itemized customer invoices and transaction numbers anytime.</div>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <div class="feature-visual-card">
+              <div class="visual-card-header">
+                <span class="visual-card-title">Customer Sale Order #SO-2026-0042</span>
+                <span class="status-pill completed">Completed & Dispatched</span>
+              </div>
+              <div style="font-size: 0.85rem; margin-bottom: 1rem; color: var(--color-text-secondary);">
+                Customer: <strong>Metro Engineering Works</strong> • Verified Outbound
+              </div>
+              <div class="visual-flow-step">
+                <div class="flow-step-num">1</div>
+                <div class="flow-step-content">
+                  <div class="flow-step-title">Tungsten Drill Bits (10 units)</div>
+                  <div class="flow-step-desc">Rate: ₹ 1,490.00 • Subtotal: ₹ 14,900.00</div>
+                </div>
+              </div>
+              <div class="visual-flow-step">
+                <div class="flow-step-num">2</div>
+                <div class="flow-step-content">
+                  <div class="flow-step-title">Machinery Lubricant 5L (4 units)</div>
+                  <div class="flow-step-desc">Rate: ₹ 1,950.00 • Subtotal: ₹ 7,800.00</div>
+                </div>
+              </div>
+              <div class="transaction-summary-bar" style="margin-top: 1rem; padding: 0.75rem 1rem;">
+                <span class="transaction-summary-label">INVOICE TOTAL</span>
+                <span class="transaction-summary-amount" style="font-size: 1.25rem;">₹ 22,700.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-      <!-- Alert Messages Banner -->
-      <div id="global-alert" class="alert hidden" role="alert"></div>
+    <!-- Section 3: Vendor Procurement & Restocking -->
+    <section class="feature-section">
+      <div class="feature-container">
+        <div class="feature-split-grid">
+          <div>
+            <div class="feature-eyebrow-pill">03 // PROCUREMENT & RESTOCKING</div>
+            <h2 class="feature-heading">Seamless vendor orders. One-click stock replenishment.</h2>
+            <p class="feature-description">
+              Maintain close relationships with suppliers while keeping tight control over incoming procurement. Track pending purchase orders and automatically update inventory with a single click once goods arrive at your loading dock.
+            </p>
+            <ul class="feature-checklist">
+              <li class="checklist-item">
+                <div class="checklist-icon">✓</div>
+                <div><strong>Vendor-linked purchase manifests:</strong> Associate items with designated suppliers for accurate cost history.</div>
+              </li>
+              <li class="checklist-item">
+                <div class="checklist-icon">✓</div>
+                <div><strong>Pending vs Received workflows:</strong> Track pipeline shipments before they enter on-hand available stock.</div>
+              </li>
+              <li class="checklist-item">
+                <div class="checklist-icon">✓</div>
+                <div><strong>Concurrency-safe receiving:</strong> Deterministic row locking guarantees accurate additions even under simultaneous warehouse activity.</div>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <div class="feature-visual-card">
+              <div class="visual-card-header">
+                <span class="visual-card-title">Purchase Order #PO-2026-0018</span>
+                <span class="status-pill ordered">Ordered • In Transit</span>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 1.25rem;">
+                Vendor: <strong>SKF Industrial Bearings Ltd.</strong> • 20 Units expected
+              </p>
+              <div style="background-color: #EFF6FF; border: 1px dashed var(--color-primary-border); padding: 1.25rem; border-radius: var(--radius-sm); text-align: center; margin-bottom: 1.25rem;">
+                <div style="font-size: 0.88rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.25rem;">
+                  Shipment Arrived at Loading Dock?
+                </div>
+                <div style="font-size: 0.8rem; color: var(--color-text-body);">
+                  Clicking below will atomically add +20 units to current inventory and log movement records.
+                </div>
+              </div>
+              <button type="button" class="btn btn-primary" style="width: 100%;">
+                ✓ Mark Received & Increment Stock
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-      <!-- VIEW 1: Authentication Container (Sign In / Register) -->
-      <section id="auth-section" class="card">
-        <h2 class="card-title">Welcome to StockPilot</h2>
-        <p class="card-description">Sign in or create an account to access your inventory workspace.</p>
+    <!-- Section 4: Immutable Audit Trail -->
+    <section id="workflow" class="feature-section alt-bg">
+      <div class="feature-container">
+        <div class="feature-split-grid reversed">
+          <div>
+            <div class="feature-eyebrow-pill">04 // AUDIT COMPLIANCE</div>
+            <h2 class="feature-heading">An immutable timeline for every single unit moved.</h2>
+            <p class="feature-description">
+              No more mystery discrepancies at month-end. Every sale, receipt, and adjustment writes an immutable, timestamped record to the inventory movement log. Inspect the exact history of any SKU with zero guesswork.
+            </p>
+            <ul class="feature-checklist">
+              <li class="checklist-item">
+                <div class="checklist-icon">✓</div>
+                <div><strong>Complete movement provenance:</strong> Exact timestamp, movement type, quantity delta (+/-), and authenticated user record.</div>
+              </li>
+              <li class="checklist-item">
+                <div class="checklist-icon">✓</div>
+                <div><strong>One-click row audit:</strong> Click the "Audit" button on any inventory row to open its full ledger timeline.</div>
+              </li>
+              <li class="checklist-item">
+                <div class="checklist-icon">✓</div>
+                <div><strong>Audit-ready exports:</strong> Designed for accountant reviews and physical stock reconciliation.</div>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <div class="feature-visual-card">
+              <div class="visual-card-header">
+                <span class="visual-card-title">Movement Audit Log: Tungsten Drill Bit</span>
+                <span class="status-pill instock">Audit Verified</span>
+              </div>
+              <div style="font-size: 0.8rem; margin-bottom: 1rem; color: var(--color-text-secondary);">
+                SKU: <span class="mono">BIT-TUNG-001</span> • Current Stock: <strong>42 units</strong>
+              </div>
+              <div class="visual-flow-step">
+                <div class="flow-step-num" style="background-color: var(--color-danger);">-10</div>
+                <div class="flow-step-content">
+                  <div class="flow-step-title">Customer Sale #SO-2026-0042</div>
+                  <div class="flow-step-desc">Metro Engineering • Dispatched today</div>
+                </div>
+              </div>
+              <div class="visual-flow-step">
+                <div class="flow-step-num" style="background-color: var(--color-success);">+25</div>
+                <div class="flow-step-content">
+                  <div class="flow-step-title">PO Received #PO-2026-0011</div>
+                  <div class="flow-step-desc">Apex Industrial Ltd • Restocked yesterday</div>
+                </div>
+              </div>
+              <div class="visual-flow-step">
+                <div class="flow-step-num" style="background-color: var(--color-primary);">+27</div>
+                <div class="flow-step-content">
+                  <div class="flow-step-title">Initial Catalog Ingestion</div>
+                  <div class="flow-step-desc">Opening balance initialized</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        <div class="tabs" role="tablist">
-          <button id="tab-login" class="tab-btn active" role="tab" aria-selected="true" aria-controls="login-panel">Sign In</button>
-          <button id="tab-register" class="tab-btn" role="tab" aria-selected="false" aria-controls="register-panel">Create Account</button>
+    <!-- Section 5: Why StockPilot vs Alternatives -->
+    <section id="advantages" class="comparison-section">
+      <div class="feature-container">
+
+        <div class="section-intro-header">
+          <div class="section-intro-eyebrow">THE ARCHITECTURAL DIFFERENCE</div>
+          <h2 class="section-intro-title">Built for operational velocity.</h2>
+          <p class="section-intro-sub">
+            Why growing wholesalers, distributors, and retailers replace messy spreadsheets and overcomplicated enterprise software with StockPilot.
+          </p>
         </div>
 
-        <!-- Sign In Form -->
+        <div class="comparison-grid">
+
+          <!-- Card 1: Spreadsheets -->
+          <div class="comparison-card">
+            <h3 class="comp-card-title">Fragile Spreadsheets</h3>
+            <p class="comp-card-sub">Manual formulas, Excel sheets, and shared Google Docs.</p>
+            <ul class="comp-feature-list">
+              <li class="comp-feature-item">❌ Broken formulas cause inventory discrepancies</li>
+              <li class="comp-feature-item">❌ Zero concurrency locking; concurrent sales overwrite each other</li>
+              <li class="comp-feature-item">❌ No immutable audit trail of who changed numbers</li>
+              <li class="comp-feature-item">❌ Slow and prone to human error at scale</li>
+            </ul>
+          </div>
+
+          <!-- Card 2: StockPilot Highlight -->
+          <div class="comparison-card highlight">
+            <div class="comparison-popular-badge">RECOMMENDED FOR GROWING BUSINESSES</div>
+            <h3 class="comp-card-title">StockPilot Inventory OS</h3>
+            <p class="comp-card-sub">Purpose-built operational inventory & dispatch platform.</p>
+            <ul class="comp-feature-list">
+              <li class="comp-feature-item">✓ <strong>Setup in 60 seconds:</strong> Immediate onboarding</li>
+              <li class="comp-feature-item">✓ <strong>Atomic PostgreSQL transactions:</strong> Zero race conditions</li>
+              <li class="comp-feature-item">✓ <strong>Automated threshold alerts:</strong> Instant stockout warnings</li>
+              <li class="comp-feature-item">✓ <strong>Immutable audit logs:</strong> Full history for every single unit</li>
+              <li class="comp-feature-item">✓ <strong>Fast 80ms interface:</strong> Lightweight, modern, responsive</li>
+            </ul>
+            <button type="button" class="btn btn-primary" id="btn-comp-getstarted" style="width: 100%;">
+              Get Started Free
+            </button>
+          </div>
+
+          <!-- Card 3: Bloated Legacy ERPs -->
+          <div class="comparison-card">
+            <h3 class="comp-card-title">Bloated Legacy ERPs</h3>
+            <p class="comp-card-sub">Multi-million dollar enterprise monolithic suites.</p>
+            <ul class="comp-feature-list">
+              <li class="comp-feature-item">❌ 6 to 12-month painful consultant implementations</li>
+              <li class="comp-feature-item">❌ Clunky, confusing 1990s user interfaces</li>
+              <li class="comp-feature-item">❌ Mandatory expensive annual licensing contracts</li>
+              <li class="comp-feature-item">❌ Hundreds of unused modules slowing your team down</li>
+            </ul>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Closing Call to Action Section -->
+    <section class="closing-cta-section">
+      <div class="closing-cta-inner">
+        <div class="closing-badge">OPERATE WITH CLARITY</div>
+        <h2 class="closing-title">Take control of your inventory today.</h2>
+        <p class="closing-text">
+          Join wholesalers, retailers, and distributors who run faster, prevent costly stockouts, and manage their business operations with complete confidence.
+        </p>
+        <div class="closing-buttons-wrap">
+          <button type="button" id="btn-cta-getstarted" class="btn-closing-cta">
+            Create Free Business Workspace
+          </button>
+          <button type="button" id="btn-cta-signin" class="btn-closing-secondary">
+            Sign In to Existing Workspace
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Public Site Footer -->
+    <footer class="site-footer">
+      <div class="footer-container">
+
+        <div class="footer-top-grid">
+
+          <div class="footer-brand-col">
+            <div class="footer-brand-title">
+              <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
+                <rect width="32" height="32" rx="8" fill="#2563EB"/>
+                <path d="M7 11L16 6L25 11L16 16L7 11Z" fill="#FFFFFF"/>
+                <path d="M7 16L16 21L25 16" stroke="#93C5FD" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M7 21L16 26L25 21" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+              <span>StockPilot</span>
+            </div>
+            <p class="footer-brand-desc">
+              High-velocity inventory intelligence and dispatch management platform for modern wholesalers, retailers, and supply chain operators.
+            </p>
+          </div>
+
+          <div>
+            <h4 class="footer-col-header">Product Capabilities</h4>
+            <ul class="footer-links-list">
+              <li><a href="#features" class="footer-link-item">Real-Time Inventory</a></li>
+              <li><a href="#features" class="footer-link-item">Sales Dispatch Manifests</a></li>
+              <li><a href="#features" class="footer-link-item">Procurement & Restocking</a></li>
+              <li><a href="#workflow" class="footer-link-item">Immutable Movement Audit</a></li>
+              <li><a href="#demo-preview" class="footer-link-item">Interactive Demo</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="footer-col-header">Platform & Trust</h4>
+            <ul class="footer-links-list">
+              <li><a href="#advantages" class="footer-link-item">Architecture Overview</a></li>
+              <li><a href="#advantages" class="footer-link-item">PostgreSQL Atomic Locking</a></li>
+              <li><a href="#advantages" class="footer-link-item">Row-Level Security</a></li>
+              <li><a href="#advantages" class="footer-link-item">Multi-Tenant Isolation</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="footer-col-header">Get Started</h4>
+            <ul class="footer-links-list">
+              <li><a href="#/register" class="footer-link-item">Create Free Workspace</a></li>
+              <li><a href="#/login" class="footer-link-item">Account Sign In</a></li>
+              <li><a href="#demo-preview" class="footer-link-item">Explore Live Catalog</a></li>
+            </ul>
+          </div>
+
+        </div>
+
+        <div class="footer-bottom-bar">
+          <div class="footer-copy">
+            © 2026 StockPilot Inc. All rights reserved. Built with Node.js Express, Supabase PostgreSQL, and vanilla modern frontend architecture.
+          </div>
+          <div class="footer-status-pill">
+            <span class="pulse-dot"></span>
+            <span>SYSTEM RUNTIME: 100% OPERATIONAL</span>
+          </div>
+        </div>
+
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- =========================================================================
+       3. AUTHENTICATION SECTION (SIGN IN & REGISTER)
+       ========================================================================= -->
+  <main class="app-viewport">
+
+    <div id="auth-section" class="auth-container-shell hidden">
+
+      <a href="#/" class="auth-nav-back" id="btn-auth-back-home">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        <span>Return to StockPilot Homepage</span>
+      </a>
+
+      <div class="auth-card">
+
+        <div class="auth-card-header">
+          <h2 class="auth-card-title">StockPilot Account</h2>
+          <p class="auth-card-subtitle">Access your business inventory workspaces and catalogs</p>
+        </div>
+
+        <!-- Auth Tabs: Login vs Register -->
+        <div class="auth-tab-switch" role="tablist">
+          <button type="button" id="tab-login" class="auth-tab-btn active" role="tab" aria-selected="true" aria-controls="login-panel">Sign In</button>
+          <button type="button" id="tab-register" class="auth-tab-btn" role="tab" aria-selected="false" aria-controls="register-panel">Create Account</button>
+        </div>
+
+        <!-- Login Panel -->
         <div id="login-panel" role="tabpanel" aria-labelledby="tab-login">
-          <form id="login-form" novalidate>
+          <form id="login-form">
             <div class="form-group">
-              <label for="login-email">Email Address</label>
-              <input type="email" id="login-email" name="email" required autocomplete="email" placeholder="name@example.com">
+              <label for="login-email">Business Email Address</label>
+              <input type="email" id="login-email" required placeholder="manager@company.com" autocomplete="email">
             </div>
             <div class="form-group">
               <label for="login-password">Password</label>
-              <input type="password" id="login-password" name="password" required autocomplete="current-password" placeholder="••••••••">
+              <input type="password" id="login-password" required placeholder="••••••••" autocomplete="current-password">
             </div>
-            <button type="submit" id="login-submit-btn" class="btn btn-primary">Sign In</button>
+            <button type="submit" id="login-submit-btn" class="btn-form-submit">Sign In to StockPilot</button>
           </form>
         </div>
 
-        <!-- Register Form -->
+        <!-- Register Panel -->
         <div id="register-panel" class="hidden" role="tabpanel" aria-labelledby="tab-register">
-          <form id="register-form" novalidate>
+          <form id="register-form">
             <div class="form-group">
-              <label for="register-email">Email Address</label>
-              <input type="email" id="register-email" name="email" required autocomplete="email" placeholder="name@example.com">
+              <label for="register-name">Full Name</label>
+              <input type="text" id="register-name" required placeholder="Jane Doe" autocomplete="name">
             </div>
             <div class="form-group">
-              <label for="register-password">Password (minimum 6 characters)</label>
-              <input type="password" id="register-password" name="password" required minlength="6" autocomplete="new-password" placeholder="••••••••">
+              <label for="register-email">Business Email Address</label>
+              <input type="email" id="register-email" required placeholder="jane@company.com" autocomplete="email">
+            </div>
+            <div class="form-group">
+              <label for="register-password">Create Password (minimum 6 characters)</label>
+              <input type="password" id="register-password" required minlength="6" placeholder="••••••••" autocomplete="new-password">
             </div>
             <div class="form-group">
               <label for="register-confirm-password">Confirm Password</label>
-              <input type="password" id="register-confirm-password" name="confirmPassword" required minlength="6" autocomplete="new-password" placeholder="••••••••">
+              <input type="password" id="register-confirm-password" required minlength="6" placeholder="••••••••" autocomplete="new-password">
             </div>
-            <button type="submit" id="register-submit-btn" class="btn btn-primary">Create Account</button>
+            <button type="submit" id="register-submit-btn" class="btn-form-submit">Create Free Account</button>
           </form>
         </div>
-      </section>
 
-      <!-- VIEW 2: Business Onboarding Section (Shown when user has no business) -->
-      <section id="onboarding-section" class="card hidden" aria-labelledby="onboarding-heading">
-        <div class="card-header-badge">
-          <span class="badge-step">Step 1 of 1</span>
-          <span class="badge-tag">Setup</span>
+      </div>
+    </div>
+
+    <!-- =========================================================================
+         4. ONBOARDING SECTION (NEW BUSINESS SETUP)
+         ========================================================================= -->
+    <div id="onboarding-section" class="auth-container-shell hidden">
+      <div class="auth-card" style="max-width: 540px;">
+        <div class="auth-card-header">
+          <div style="font-size: 0.75rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; margin-bottom: 0.35rem;">
+            STAGE 01 // WORKSPACE SETUP
+          </div>
+          <h2 class="auth-card-title">Setup Your Business</h2>
+          <p class="auth-card-subtitle">Define your organization identity, currency, and operational catalog parameters</p>
         </div>
-        <h2 id="onboarding-heading" class="card-title">Set Up Your Business Workspace</h2>
-        <p class="card-description">Create your business organization to begin managing products, suppliers, and inventory.</p>
 
-        <form id="onboarding-form" novalidate>
+        <form id="onboarding-form">
           <div class="form-group">
-            <label for="biz-name">Business Name <span class="required">*</span></label>
-            <input type="text" id="biz-name" name="name" required placeholder="e.g. Apex Retailers" maxlength="100">
-            <span class="field-hint">The operating trade name for your business.</span>
+            <label for="biz-name">Company / Business Name *</label>
+            <input type="text" id="biz-name" required placeholder="e.g. Acme Industrial Distributors">
           </div>
 
           <div class="form-row">
-            <div class="form-group form-col">
-              <label for="biz-industry">Industry <span class="required">*</span></label>
-              <select id="biz-industry" name="industry" required>
-                <option value="" disabled selected>Select an industry...</option>
-                <option value="Retail & Apparel">Retail & Apparel</option>
-                <option value="Grocery & Supermarket">Grocery & Supermarket</option>
-                <option value="Electronics & Gadgets">Electronics & Gadgets</option>
-                <option value="Food & Beverage">Food & Beverage</option>
-                <option value="Pharmaceuticals & Health">Pharmaceuticals & Health</option>
-                <option value="Hardware & Building Supplies">Hardware & Building Supplies</option>
-                <option value="Manufacturing & Wholesale">Manufacturing & Wholesale</option>
-                <option value="Other">Other (Specify below)</option>
+            <div class="form-group">
+              <label for="biz-industry">Industry Sector *</label>
+              <select id="biz-industry" required>
+                <option value="Retail">Retail & Consumer Goods</option>
+                <option value="Wholesale">Wholesale & Distribution</option>
+                <option value="Manufacturing">Manufacturing & Hardware</option>
+                <option value="Food & Beverage">Food & Hospitality</option>
+                <option value="Electronics">Electronics & Hardware</option>
+                <option value="Healthcare">Healthcare & Supplies</option>
+                <option value="Other">Other Specialized Trade</option>
               </select>
             </div>
-
-            <div class="form-group form-col">
-              <label for="biz-currency">Operating Currency <span class="required">*</span></label>
-              <select id="biz-currency" name="currency" required>
+            <div class="form-group">
+              <label for="biz-currency">Operating Currency *</label>
+              <select id="biz-currency" required>
                 <option value="INR" selected>INR (₹) - Indian Rupee</option>
                 <option value="USD">USD ($) - US Dollar</option>
                 <option value="EUR">EUR (€) - Euro</option>
                 <option value="GBP">GBP (£) - British Pound</option>
                 <option value="AED">AED (د.إ) - UAE Dirham</option>
                 <option value="SGD">SGD (S$) - Singapore Dollar</option>
-                <option value="CAD">CAD ($) - Canadian Dollar</option>
-                <option value="AUD">AUD ($) - Australian Dollar</option>
               </select>
             </div>
           </div>
 
-          <!-- Custom Industry input (shown only when Other is selected) -->
           <div id="biz-industry-custom-group" class="form-group hidden">
-            <label for="biz-industry-custom">Specify Industry <span class="required">*</span></label>
-            <input type="text" id="biz-industry-custom" name="customIndustry" placeholder="e.g. Automotive Spare Parts" maxlength="50">
+            <label for="biz-industry-custom">Specify Industry Sector *</label>
+            <input type="text" id="biz-industry-custom" placeholder="e.g. Aerospace Fasteners Distribution">
           </div>
 
           <div class="form-group">
-            <label for="biz-location">Location <span class="optional">(Optional)</span></label>
-            <input type="text" id="biz-location" name="location" placeholder="e.g. Bangalore, Karnataka" maxlength="150">
+            <label for="biz-location">Primary Warehouse / Dispatch Location</label>
+            <input type="text" id="biz-location" placeholder="e.g. Mumbai Logistics Park, MH">
           </div>
 
-          <button type="submit" id="onboarding-submit-btn" class="btn btn-primary btn-lg">
-            Create Business Workspace
+          <button type="submit" id="onboarding-submit-btn" class="btn-form-submit" style="margin-top: 0.5rem;">
+            Initialize Business Workspace →
           </button>
         </form>
-      </section>
+      </div>
+    </div>
 
-      <!-- VIEW 3: Business Workspace & Inventory Management -->
-      <section id="workspace-section" class="hidden">
-        <!-- Business Context Header Card -->
-        <div class="card mb-4">
-          <div class="workspace-header">
-            <div>
-              <div class="workspace-eyebrow">Active Organization</div>
-              <div class="workspace-selector-row">
-                <h2 id="workspace-name" class="workspace-title">-</h2>
-                <div id="business-switcher-wrapper" class="hidden">
-                  <select id="business-switcher-select" class="select-sm" aria-label="Switch Business"></select>
+    <!-- =========================================================================
+         5. OPERATIONAL WORKSPACE SECTION (INVENTORY, SALES, PURCHASES)
+         ========================================================================= -->
+    <div id="workspace-section" class="workspace-wrapper hidden">
+
+      <!-- Workspace Organization Context Card -->
+      <div class="workspace-context-card">
+        <div class="workspace-header-row">
+          <div class="workspace-title-box">
+            <h2 id="workspace-name" class="workspace-title">Loading Organization...</h2>
+            <span id="workspace-role-badge" class="workspace-role-pill">OWNER</span>
+          </div>
+
+          <!-- Business Switcher Dropdown (If user belongs to multiple organizations) -->
+          <div id="business-switcher-wrapper" class="hidden">
+            <select id="business-switcher-select" class="precision-select" aria-label="Switch Active Business Workspace">
+              <!-- Dynamically populated -->
+            </select>
+          </div>
+        </div>
+
+        <div class="workspace-spec-strip">
+          <div class="spec-cell">
+            <span class="spec-key">INDUSTRY CLASSIFICATION</span>
+            <span id="workspace-industry" class="spec-val">-</span>
+          </div>
+          <div class="spec-cell">
+            <span class="spec-key">DISPATCH LOGISTICS HUB</span>
+            <span id="workspace-location" class="spec-val">-</span>
+          </div>
+          <div class="spec-cell">
+            <span class="spec-key">PRIMARY CURRENCY</span>
+            <span id="workspace-currency" class="spec-val mono">-</span>
+          </div>
+          <div class="spec-cell">
+            <span class="spec-key">SYSTEM WORKSPACE UUID</span>
+            <span id="workspace-id" class="spec-val mono" style="font-size: 0.75rem;">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Module Navigation Switcher Rack -->
+      <nav class="module-nav-rack" role="tablist">
+        <button id="nav-tab-dashboard" class="module-nav-tab active" role="tab" aria-selected="true" aria-controls="module-dashboard">
+          <span>[01] Overview & Analytics</span>
+        </button>
+        <button id="nav-tab-inventory" class="module-nav-tab" role="tab" aria-selected="false" aria-controls="module-inventory">
+          <span>[02] Inventory & Catalog</span>
+        </button>
+        <button id="nav-tab-sales" class="module-nav-tab" role="tab" aria-selected="false" aria-controls="module-sales">
+          <span>[03] Sales & Customer Orders</span>
+        </button>
+        <button id="nav-tab-purchases" class="module-nav-tab" role="tab" aria-selected="false" aria-controls="module-purchases">
+          <span>[04] Procurement & Restocking</span>
+        </button>
+      </nav>
+
+      <!-- MODULE 0: ANALYTICS DASHBOARD -->
+      <section id="module-dashboard" role="tabpanel" aria-labelledby="nav-tab-dashboard">
+
+        <!-- Dashboard Operational Header -->
+        <div class="dashboard-header-bar">
+          <div>
+            <h3 class="dashboard-title">Executive Intelligence & Operations</h3>
+            <p id="dashboard-date-context" class="dashboard-subtitle">Real-time inventory valuation, dispatch trends, and replenishment alerts.</p>
+          </div>
+          <div class="dashboard-controls-cluster">
+            <div class="dashboard-period-selector-wrap">
+              <label for="dashboard-period-select" class="sr-only">Trend Period</label>
+              <select id="dashboard-period-select" class="precision-select" aria-label="Select Analytics Timeframe">
+                <option value="30" selected>Last 30 Days</option>
+                <option value="7">Last 7 Days</option>
+              </select>
+            </div>
+            <button type="button" id="btn-refresh-dashboard" class="btn btn-secondary btn-icon-label" title="Refresh dashboard analytics">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+              </svg>
+              <span>Refresh</span>
+            </button>
+            <span id="dashboard-last-updated" class="dashboard-timestamp-badge tabular-nums mono">Updated just now</span>
+          </div>
+        </div>
+
+        <!-- Dashboard Error Alert State -->
+        <div id="dashboard-error-alert" class="alert alert-error hidden" role="alert">
+          <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+            <span id="dashboard-error-text">Failed to load analytics data.</span>
+            <button type="button" id="btn-retry-dashboard" class="btn btn-sm btn-secondary" style="margin-left: 1rem;">Retry Fetch</button>
+          </div>
+        </div>
+
+        <!-- Dashboard Loading Skeleton State -->
+        <div id="dashboard-loading-state" class="dashboard-loading-card hidden" aria-live="polite">
+          <div class="spinner-circle"></div>
+          <span class="loading-label">Aggregating inventory metrics & transaction trends...</span>
+        </div>
+
+        <!-- Dashboard Core Content (KPIs, Charts, Two-Col Lower Panels) -->
+        <div id="dashboard-content">
+
+          <!-- 4 Concise KPI Metric Cards -->
+          <div class="dashboard-kpi-grid">
+
+            <!-- KPI 1: Inventory Valuation -->
+            <div class="dash-kpi-card highlight-blue">
+              <div class="dash-kpi-top">
+                <span class="dash-kpi-label">TOTAL INVENTORY VALUE</span>
+                <span class="dash-kpi-badge blue">ON-HAND</span>
+              </div>
+              <div id="dash-kpi-valuation" class="dash-kpi-val tabular-nums mono">₹0.00</div>
+              <div class="dash-kpi-sub">
+                <span id="dash-kpi-units" class="font-semibold tabular-nums">0</span> units on hand at cost
+              </div>
+            </div>
+
+            <!-- KPI 2: Low Stock Threshold Alerts -->
+            <div class="dash-kpi-card highlight-amber">
+              <div class="dash-kpi-top">
+                <span class="dash-kpi-label">RESTOCK ALERTS</span>
+                <span class="dash-kpi-badge amber">THRESHOLD</span>
+              </div>
+              <div id="dash-kpi-low-stock" class="dash-kpi-val warning tabular-nums mono">0 Items</div>
+              <div class="dash-kpi-sub">
+                <span id="dash-kpi-out-of-stock" class="font-semibold tabular-nums text-danger">0</span> items completely depleted
+              </div>
+            </div>
+
+            <!-- KPI 3: Monthly Sales Revenue -->
+            <div class="dash-kpi-card highlight-green">
+              <div class="dash-kpi-top">
+                <span class="dash-kpi-label">MONTHLY SALES (GROSS)</span>
+                <span class="dash-kpi-badge green">THIS MONTH</span>
+              </div>
+              <div id="dash-kpi-monthly-sales" class="dash-kpi-val tabular-nums mono">₹0.00</div>
+              <div class="dash-kpi-sub">
+                <span id="dash-kpi-monthly-orders" class="font-semibold tabular-nums">0</span> completed orders (Gross revenue)
+              </div>
+            </div>
+
+            <!-- KPI 4: Active Catalog SKUs -->
+            <div class="dash-kpi-card">
+              <div class="dash-kpi-top">
+                <span class="dash-kpi-label">CATALOG SKUS</span>
+                <span class="dash-kpi-badge slate">ACTIVE</span>
+              </div>
+              <div id="dash-kpi-active-skus" class="dash-kpi-val tabular-nums mono">0</div>
+              <div class="dash-kpi-sub">
+                <span id="dash-kpi-total-skus" class="font-semibold tabular-nums">0</span> total products in catalog
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Sales & Procurement Trend Chart -->
+          <div class="dashboard-chart-card">
+            <div class="chart-header-row">
+              <div>
+                <h4 class="chart-card-title">Sales Revenue & Procurement Trend</h4>
+                <p class="chart-card-sub">Daily comparison of completed sales and supplier purchasing spend.</p>
+              </div>
+              <div class="chart-legend-wrap">
+                <div class="chart-legend-item">
+                  <span class="chart-legend-indicator color-sales"></span>
+                  <span>Sales Revenue</span>
+                </div>
+                <div class="chart-legend-item">
+                  <span class="chart-legend-indicator color-purchases"></span>
+                  <span>Procurement Spend</span>
                 </div>
               </div>
             </div>
-            <div class="workspace-badges">
-              <span id="workspace-role-badge" class="status-badge success">OWNER</span>
+
+            <!-- Responsive Accessible SVG Chart Wrapper -->
+            <div id="dashboard-trend-chart-wrap" class="chart-viewport-box">
+              <!-- Inline SVG populated dynamically by JS -->
+            </div>
+
+            <!-- Chart Empty State -->
+            <div id="dashboard-chart-empty" class="chart-empty-state-box hidden">
+              <div class="empty-icon-box">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+              </div>
+              <div class="empty-title">No transactions recorded in this period</div>
+              <div class="empty-text">Complete a sale or receive a purchase order to populate the visual trend line.</div>
             </div>
           </div>
 
-          <div class="workspace-meta-grid">
-            <div class="meta-item">
-              <span class="meta-label">Industry</span>
-              <span id="workspace-industry" class="meta-value">-</span>
+          <!-- Two-Column Operational Panels: Low Stock Alerts + Recent Activity -->
+          <div class="dashboard-split-grid">
+
+            <!-- Left Column: Critical Low Stock Items -->
+            <div class="dashboard-panel-card">
+              <div class="dashboard-panel-header">
+                <div>
+                  <h4 class="dashboard-panel-title">Urgent Low-Stock Alerts</h4>
+                  <p class="dashboard-panel-sub">Ranked by safety deficit relative to minimum threshold.</p>
+                </div>
+                <button type="button" id="btn-dash-view-inventory" class="btn-text-action" title="Navigate to inventory catalog">
+                  View Catalog →
+                </button>
+              </div>
+
+              <div id="dashboard-low-stock-wrap" class="dashboard-panel-body">
+                <table class="ledger-table compact-table">
+                  <thead>
+                    <tr>
+                      <th>Product & SKU</th>
+                      <th style="text-align: right;">Stock</th>
+                      <th style="text-align: right;">Reorder</th>
+                      <th style="text-align: right;">Deficit</th>
+                      <th style="text-align: center;">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashboard-low-stock-tbody">
+                    <!-- Populated by JS -->
+                  </tbody>
+                </table>
+              </div>
+
+              <div id="dashboard-low-stock-empty" class="dash-panel-empty-state hidden">
+                <div class="empty-check-icon">✓</div>
+                <div>
+                  <div style="font-weight: 600; color: var(--color-text-main);">All stock levels healthy</div>
+                  <div style="font-size: 0.8rem; color: var(--color-text-muted);">No catalog items are currently below their minimum threshold.</div>
+                </div>
+              </div>
             </div>
-            <div class="meta-item">
-              <span class="meta-label">Location</span>
-              <span id="workspace-location" class="meta-value">-</span>
+
+            <!-- Right Column: Recent Operational Activity -->
+            <div class="dashboard-panel-card">
+              <div class="dashboard-panel-header">
+                <div>
+                  <h4 class="dashboard-panel-title">Recent Activity Feed</h4>
+                  <p class="dashboard-panel-sub">Latest customer dispatches and supplier restock POs.</p>
+                </div>
+                <div class="panel-links-cluster">
+                  <button type="button" id="btn-dash-view-sales" class="btn-text-action" title="Open Sales Orders">Sales →</button>
+                  <span class="divider-dot">•</span>
+                  <button type="button" id="btn-dash-view-purchases" class="btn-text-action" title="Open Procurement">Purchases →</button>
+                </div>
+              </div>
+
+              <div id="dashboard-recent-activity-list" class="dashboard-activity-feed-list">
+                <!-- Populated by JS -->
+              </div>
+
+              <div id="dashboard-activity-empty" class="dash-panel-empty-state hidden">
+                <div style="font-weight: 600; color: var(--color-text-main);">No recent transactions</div>
+                <div style="font-size: 0.8rem; color: var(--color-text-muted);">Recent sales invoices and purchase receipts will appear here in real time.</div>
+              </div>
             </div>
-            <div class="meta-item">
-              <span class="meta-label">Currency</span>
-              <span id="workspace-currency" class="meta-value">-</span>
+
+          </div>
+
+          <!-- =========================================================================
+               INVENTORY INTELLIGENCE & RESTOCK PLANNING ENGINE (STAGE 6.2.3)
+               ========================================================================= -->
+          <div id="dashboard-intelligence-section" class="dashboard-panel-card intelligence-card-wrap" style="margin-top: 1.5rem;">
+
+            <!-- Section Header & Controls Cluster -->
+            <div class="intel-header-cluster">
+              <div class="intel-header-info">
+                <div class="intel-eyebrow-pill">PREDICTIVE OPERATIONS // RESTOCK ENGINE</div>
+                <h3 class="dashboard-panel-title" style="font-size: 1.15rem; margin-top: 0.25rem;">Inventory Intelligence & Replenishment Planning</h3>
+                <p class="dashboard-panel-sub" style="max-width: 720px; margin-top: 0.25rem;">
+                  Deterministic burn rates, days of stock remaining, and calibrated reorder quantities calculated from actual completed dispatch velocity and in-flight purchase manifests.
+                </p>
+              </div>
+
+              <div class="intel-controls-strip">
+                <div class="intel-control-unit">
+                  <label for="intel-window-select" class="intel-control-label">ANALYSIS WINDOW</label>
+                  <select id="intel-window-select" class="precision-select intel-select" aria-label="Select Historical Velocity Window">
+                    <option value="30" selected>30-Day Window</option>
+                    <option value="14">14-Day Window</option>
+                  </select>
+                </div>
+
+                <div class="intel-control-unit">
+                  <label for="intel-target-select" class="intel-control-label">TARGET COVERAGE</label>
+                  <select id="intel-target-select" class="precision-select intel-select" aria-label="Select Target Coverage Days">
+                    <option value="7">7 Days Runway</option>
+                    <option value="14">14 Days Runway</option>
+                    <option value="21">21 Days Runway</option>
+                    <option value="30" selected>30 Days Runway (Default)</option>
+                    <option value="45">45 Days Runway</option>
+                    <option value="60">60 Days Runway</option>
+                    <option value="90">90 Days Runway</option>
+                  </select>
+                </div>
+
+                <div class="intel-control-unit" style="align-self: flex-end;">
+                  <button type="button" id="btn-refresh-intel" class="btn btn-secondary btn-icon-label" title="Refresh inventory intelligence">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                    </svg>
+                    <span>Recalculate</span>
+                  </button>
+                </div>
+
+                <span id="intel-last-updated" class="dashboard-timestamp-badge tabular-nums mono" style="align-self: flex-end;">Synchronized</span>
+              </div>
             </div>
-            <div class="meta-item">
-              <span class="meta-label">Tenant ID</span>
-              <span id="workspace-id" class="meta-value mono">-</span>
+
+            <!-- Intelligence Error Alert -->
+            <div id="intel-error-alert" class="alert alert-error hidden" role="alert" style="margin-top: 1rem;">
+              <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                <span id="intel-error-text">Failed to evaluate inventory intelligence.</span>
+                <button type="button" id="btn-retry-intel" class="btn btn-sm btn-secondary" style="margin-left: 1rem;">Retry Calculation</button>
+              </div>
             </div>
+
+            <!-- Intelligence Loading Skeleton -->
+            <div id="intel-loading-state" class="dashboard-loading-card hidden" aria-live="polite" style="margin-top: 1rem;">
+              <div class="spinner-circle"></div>
+              <span class="loading-label">Evaluating historical burn rates, incoming POs, and stock runways...</span>
+            </div>
+
+            <!-- Summary Risk Metrics Strip -->
+            <div class="intel-summary-grid" style="margin-top: 1.25rem;">
+              <div class="intel-summary-card depleted">
+                <div class="intel-card-top">
+                  <span class="intel-card-label">DEPLETED STOCK</span>
+                  <span class="risk-badge critical">CRITICAL</span>
+                </div>
+                <div id="intel-summary-depleted" class="intel-card-val mono tabular-nums">0</div>
+                <div class="intel-card-sub">Items currently at 0 on-hand</div>
+              </div>
+
+              <div class="intel-summary-card high-risk">
+                <div class="intel-card-top">
+                  <span class="intel-card-label">HIGH RUNWAY RISK</span>
+                  <span class="risk-badge high">HIGH RISK</span>
+                </div>
+                <div id="intel-summary-high-risk" class="intel-card-val mono tabular-nums">0</div>
+                <div class="intel-card-sub">Runway ≤ 7 days or below min</div>
+              </div>
+
+              <div class="intel-summary-card moderate-risk">
+                <div class="intel-card-top">
+                  <span class="intel-card-label">MODERATE RISK</span>
+                  <span class="risk-badge moderate">MODERATE</span>
+                </div>
+                <div id="intel-summary-moderate-risk" class="intel-card-val mono tabular-nums">0</div>
+                <div class="intel-card-sub">Runway 8–14 days</div>
+              </div>
+
+              <div class="intel-summary-card calibrating">
+                <div class="intel-card-top">
+                  <span class="intel-card-label">INSUFFICIENT HISTORY</span>
+                  <span class="risk-badge calibrating">CALIBRATING</span>
+                </div>
+                <div id="intel-summary-insufficient-data" class="intel-card-val mono tabular-nums">0</div>
+                <div class="intel-card-sub">&lt; 14 days or &lt; 2 sales</div>
+              </div>
+
+              <div class="intel-summary-card capital">
+                <div class="intel-card-top">
+                  <span class="intel-card-label">TOTAL REORDER CAPITAL</span>
+                  <span class="risk-badge cobalt">ESTIMATED</span>
+                </div>
+                <div id="intel-summary-reorder-cost" class="intel-card-val mono tabular-nums">₹0.00</div>
+                <div class="intel-card-sub">Capital required for target days</div>
+              </div>
+            </div>
+
+            <!-- Functional Filter Tabs & Search Bar -->
+            <div class="intel-filter-bar" style="margin-top: 1.5rem;">
+              <div class="intel-filter-tabs" role="tablist" aria-label="Filter intelligence recommendations by risk">
+                <button type="button" id="intel-filter-all" class="intel-tab-btn active" role="tab" aria-selected="true">
+                  All Products (<span id="intel-count-all">0</span>)
+                </button>
+                <button type="button" id="intel-filter-critical" class="intel-tab-btn" role="tab" aria-selected="false">
+                  Critical &amp; High Risk (<span id="intel-count-critical">0</span>)
+                </button>
+                <button type="button" id="intel-filter-moderate" class="intel-tab-btn" role="tab" aria-selected="false">
+                  Moderate Risk (<span id="intel-count-moderate">0</span>)
+                </button>
+                <button type="button" id="intel-filter-healthy" class="intel-tab-btn" role="tab" aria-selected="false">
+                  Healthy (<span id="intel-count-healthy">0</span>)
+                </button>
+                <button type="button" id="intel-filter-insufficient" class="intel-tab-btn" role="tab" aria-selected="false">
+                  Insufficient History (<span id="intel-count-insufficient">0</span>)
+                </button>
+              </div>
+
+              <div class="search-field-unit intel-search-wrap">
+                <span class="search-icon-adornment">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                </span>
+                <input type="text" id="intel-search-input" placeholder="Filter by product name or SKU..." aria-label="Search recommendations">
+              </div>
+            </div>
+
+            <!-- Recommendations Data Table -->
+            <div id="intel-table-container" class="ledger-table-container" style="margin-top: 1rem;">
+              <table class="ledger-table intel-table" id="intel-table">
+                <thead>
+                  <tr>
+                    <th style="min-width: 200px;">Product &amp; SKU</th>
+                    <th style="text-align: right; min-width: 100px;">On-Hand / Min</th>
+                    <th style="text-align: right; min-width: 90px;">Inbound PO</th>
+                    <th style="text-align: right; min-width: 120px;">Velocity (Sold / Day)</th>
+                    <th style="text-align: right; min-width: 120px;">Stock Runway</th>
+                    <th style="text-align: center; min-width: 120px;">Demand Trend</th>
+                    <th style="min-width: 220px;">Risk Advisory</th>
+                    <th style="text-align: right; min-width: 140px;">Suggested Reorder</th>
+                    <th style="text-align: right; min-width: 90px;">Restock</th>
+                  </tr>
+                </thead>
+                <tbody id="intel-tbody">
+                  <!-- Populated dynamically by JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Empty Catalog State -->
+            <div id="intel-empty-catalog" class="dash-panel-empty-state hidden" style="margin-top: 1rem;">
+              <div style="font-weight: 600; color: var(--color-text-main);">No Products in Catalog</div>
+              <div style="font-size: 0.8rem; color: var(--color-text-muted);">Add active items to your catalog to generate replenishment intelligence.</div>
+            </div>
+
+            <!-- All Healthy / No Restock State -->
+            <div id="intel-empty-restock" class="dash-panel-empty-state hidden" style="margin-top: 1rem;">
+              <div class="empty-check-icon">✓</div>
+              <div>
+                <div style="font-weight: 600; color: var(--color-text-main);">All evaluated stock levels are adequate</div>
+                <div style="font-size: 0.8rem; color: var(--color-text-muted);">All active catalog items meet their minimum thresholds and target coverage windows. No purchase orders required at this time.</div>
+              </div>
+            </div>
+
+            <!-- Filter No Results State -->
+            <div id="intel-empty-filter" class="dash-panel-empty-state hidden" style="margin-top: 1rem;">
+              <div style="font-weight: 600; color: var(--color-text-main);">No matching recommendations</div>
+              <div style="font-size: 0.8rem; color: var(--color-text-muted);">No products match the selected risk category or search criteria.</div>
+            </div>
+
+          </div>
+
+          <!-- =========================================================================
+               STAGE 7.1: AI-POWERED INVENTORY ANALYST
+               ========================================================================= -->
+          <div id="dashboard-ai-insights-section" class="dashboard-panel-card ai-insights-card-wrap" style="margin-top: 1.5rem;">
+
+            <!-- Section Header & Controls Cluster -->
+            <div class="ai-header-cluster">
+              <div class="ai-header-info">
+                <div class="ai-eyebrow-pill">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                  </svg>
+                  AI INVENTORY ANALYST // SYNTHESIS ENGINE
+                </div>
+                <h3 class="dashboard-panel-title" style="font-size: 1.15rem; margin-top: 0.25rem;">Executive Inventory Insights &amp; Risk Synthesis</h3>
+                <p class="dashboard-panel-sub" style="max-width: 720px; margin-top: 0.25rem;">
+                  AI-driven executive narrative synthesizing burn velocity, demand volatility, stockout liabilities, and prioritized operational actions.
+                </p>
+              </div>
+
+              <div class="ai-controls-strip">
+                <button type="button" id="btn-generate-ai-insights" class="btn btn-primary btn-icon-label" title="Generate AI Inventory Insights">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                  </svg>
+                  <span>Generate AI Insights</span>
+                </button>
+                <span id="ai-insights-last-updated" class="dashboard-timestamp-badge tabular-nums mono" style="align-self: center;">Ready to Analyze</span>
+              </div>
+            </div>
+
+            <!-- Mandatory Operational Disclaimer Notice -->
+            <div class="ai-disclaimer-banner" role="note" style="margin-top: 1rem;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              <span>AI explanations are analytical interpretations of deterministic stock velocity and must be verified by management before committing procurement capital.</span>
+            </div>
+
+            <!-- Error State Alert -->
+            <div id="ai-insights-error-alert" class="alert alert-error hidden" role="alert" style="margin-top: 1rem;">
+              <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; flex-wrap: wrap; gap: 0.5rem;">
+                <span id="ai-insights-error-text">Failed to generate AI inventory insights.</span>
+                <button type="button" id="btn-retry-ai-insights" class="btn btn-sm btn-secondary">Retry Analysis</button>
+              </div>
+            </div>
+
+            <!-- Loading Skeleton State -->
+            <div id="ai-insights-loading-state" class="dashboard-loading-card hidden" aria-live="polite" style="margin-top: 1rem;">
+              <div class="spinner-circle"></div>
+              <span class="loading-label">Synthesizing burn rates, stockout exposure, and purchase recommendations with AI analyst...</span>
+            </div>
+
+            <!-- Idle Initial State -->
+            <div id="ai-insights-idle-state" class="ai-insights-empty-card" style="margin-top: 1rem;">
+              <div class="ai-idle-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                  <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+              </div>
+              <div style="font-weight: 700; color: var(--color-text-main); font-size: 0.95rem;">AI Inventory Analyst Ready</div>
+              <p style="font-size: 0.8rem; color: var(--color-text-secondary); max-width: 540px; margin: 0.35rem 0 0.85rem; text-align: center;">
+                Click "Generate AI Insights" above to synthesize catalog burn rates, identify high-urgency risks, detect demand anomalies, and review prioritized replenishment suggestions.
+              </p>
+            </div>
+
+            <!-- Populated Insights Content View -->
+            <div id="ai-insights-content" class="hidden" style="margin-top: 1.25rem;">
+
+              <!-- Executive Summary Card -->
+              <div class="ai-summary-card">
+                <div class="ai-card-title-row">
+                  <span class="ai-card-title-label">EXECUTIVE SUMMARY</span>
+                  <span id="ai-insights-model-badge" class="risk-badge cobalt">GEMINI 1.5 FLASH</span>
+                </div>
+                <div id="ai-insights-summary" class="ai-summary-text">
+                  <!-- Populated dynamically via safe textContent -->
+                </div>
+              </div>
+
+              <!-- Prioritized Findings Grid / List -->
+              <div style="margin-top: 1.25rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                  <h4 style="font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-secondary); margin: 0;">
+                    Prioritized Findings &amp; Recommended Actions
+                  </h4>
+                  <span id="ai-insights-findings-count" class="dashboard-timestamp-badge mono">0 Observations</span>
+                </div>
+                <div id="ai-insights-findings-list" class="ai-findings-container">
+                  <!-- Populated dynamically via DOM methods -->
+                </div>
+              </div>
+
+              <!-- Data Limitations & Calibration Transparency -->
+              <div class="ai-limitations-box" style="margin-top: 1.25rem;">
+                <div class="ai-limitations-header">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                  </svg>
+                  <span>Data Limitations &amp; Boundary Constraints</span>
+                </div>
+                <ul id="ai-insights-limitations" class="ai-limitations-list">
+                  <!-- Populated dynamically -->
+                </ul>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- =========================================================================
+               STAGE 7.3: DEMAND INSIGHTS & SLOW-MOVING STOCK
+               ========================================================================= -->
+          <div id="dashboard-demand-insights-section" class="dashboard-panel-card demand-insights-card-wrap" style="margin-top: 1.5rem;">
+
+            <!-- Section Header & Controls Cluster -->
+            <div class="intel-header-cluster">
+              <div class="intel-header-info">
+                <div class="demand-eyebrow-pill">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                    <polyline points="17 6 23 6 23 12"></polyline>
+                  </svg>
+                  DEMAND &amp; SLOW-MOVING STOCK // TREND ANALYSIS
+                </div>
+                <h3 class="dashboard-panel-title" style="font-size: 1.15rem; margin-top: 0.25rem;">Demand Trends &amp; Inventory Velocity Analysis</h3>
+                <p class="dashboard-panel-sub" style="max-width: 720px; margin-top: 0.25rem;">
+                  Period-over-period sales trends, slow-moving catalog detection, and empirical overstock review to optimize working capital.
+                </p>
+                <div class="demand-period-ribbon mono" style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 0.6rem; display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                  <span>Recent Period: <strong id="demand-recent-range" style="color: var(--color-text-main);">--</strong></span>
+                  <span>Preceding Period: <strong id="demand-prior-range" style="color: var(--color-text-muted);">--</strong></span>
+                </div>
+              </div>
+
+              <div class="intel-controls-strip">
+                <div class="intel-control-unit">
+                  <label for="demand-window-select" class="mono text-muted" style="font-size: 0.72rem; text-transform: uppercase;">Comparison Window:</label>
+                  <select id="demand-window-select" class="form-input form-input-sm mono">
+                    <option value="30" selected>Recent 30d vs Prior 30d</option>
+                    <option value="14">Recent 14d vs Prior 14d</option>
+                  </select>
+                </div>
+
+                <div class="intel-control-unit" style="align-self: flex-end;">
+                  <button type="button" id="btn-refresh-demand" class="btn btn-secondary btn-icon-label" title="Refresh demand insights">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                    </svg>
+                    <span>Analyze Demand</span>
+                  </button>
+                </div>
+
+                <span id="demand-last-updated" class="dashboard-timestamp-badge tabular-nums mono" style="align-self: flex-end;">Ready</span>
+              </div>
+            </div>
+
+            <!-- Error State Alert -->
+            <div id="demand-error-alert" class="alert alert-error hidden" role="alert" style="margin-top: 1rem;">
+              <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; flex-wrap: wrap; gap: 0.5rem;">
+                <span id="demand-error-text">Failed to calculate demand insights.</span>
+                <button type="button" id="btn-retry-demand" class="btn btn-sm btn-secondary">Retry Analysis</button>
+              </div>
+            </div>
+
+            <!-- Loading Skeleton State -->
+            <div id="demand-loading-state" class="dashboard-loading-card hidden" aria-live="polite" style="margin-top: 1rem;">
+              <div class="spinner-circle"></div>
+              <span class="loading-label">Evaluating historical sales velocities, demand acceleration, and overstock thresholds...</span>
+            </div>
+
+            <!-- Summary Risk Metrics Strip -->
+            <div class="intel-summary-grid demand-summary-grid" style="margin-top: 1.25rem;">
+              <div class="intel-summary-card" style="border-left: 3px solid var(--color-success, #16A34A);">
+                <div class="intel-card-top">
+                  <span class="intel-card-label">ACCELERATING DEMAND</span>
+                  <span class="risk-badge healthy">GROWING</span>
+                </div>
+                <div id="demand-summary-accelerating" class="intel-card-val mono tabular-nums">0</div>
+                <div class="intel-card-sub">Sales velocity &gt; +10% vs prior window</div>
+              </div>
+
+              <div class="intel-summary-card" style="border-left: 3px solid var(--color-warning, #D97706);">
+                <div class="intel-card-top">
+                  <span class="intel-card-label">DECELERATING DEMAND</span>
+                  <span class="risk-badge moderate">SLOWING</span>
+                </div>
+                <div id="demand-summary-decelerating" class="intel-card-val mono tabular-nums">0</div>
+                <div class="intel-card-sub">Sales velocity &lt; -10% vs prior window</div>
+              </div>
+
+              <div class="intel-summary-card" style="border-left: 3px solid #DC2626;">
+                <div class="intel-card-top">
+                  <span class="intel-card-label">SLOW-MOVING STOCK</span>
+                  <span class="risk-badge critical">STAGNANT</span>
+                </div>
+                <div id="demand-summary-slow-moving" class="intel-card-val mono tabular-nums">0</div>
+                <div class="intel-card-sub">Low velocity or zero sales in lookback</div>
+              </div>
+
+              <div class="intel-summary-card" style="border-left: 3px solid #7C3AED;">
+                <div class="intel-card-top">
+                  <span class="intel-card-label">POSSIBLE OVERSTOCK</span>
+                  <span class="risk-badge cobalt">REVIEW</span>
+                </div>
+                <div id="demand-summary-overstocked" class="intel-card-val mono tabular-nums">0</div>
+                <div id="demand-summary-excess-capital" class="intel-card-sub mono tabular-nums" style="font-weight: 600; color: #7C3AED;">₹0.00 review</div>
+              </div>
+
+              <div class="intel-summary-card" style="border-left: 3px solid #64748B;">
+                <div class="intel-card-top">
+                  <span class="intel-card-label">CALIBRATING</span>
+                  <span class="risk-badge calibrating">NEW ITEMS</span>
+                </div>
+                <div id="demand-summary-calibrating" class="intel-card-val mono tabular-nums">0</div>
+                <div class="intel-card-sub">&lt; 30 days catalog history</div>
+              </div>
+            </div>
+
+            <!-- Filter Tabs & Search Bar -->
+            <div class="intel-filter-bar" style="margin-top: 1.5rem;">
+              <div class="intel-filter-tabs" role="tablist" aria-label="Filter demand insights items">
+                <button type="button" id="demand-filter-all" class="intel-tab-btn active" role="tab" aria-selected="true">
+                  All Items (<span id="demand-count-all">0</span>)
+                </button>
+                <button type="button" id="demand-filter-accel" class="intel-tab-btn" role="tab" aria-selected="false">
+                  Accelerating (<span id="demand-count-accel">0</span>)
+                </button>
+                <button type="button" id="demand-filter-decel" class="intel-tab-btn" role="tab" aria-selected="false">
+                  Decelerating (<span id="demand-count-decel">0</span>)
+                </button>
+                <button type="button" id="demand-filter-slow" class="intel-tab-btn" role="tab" aria-selected="false">
+                  Slow-Moving (<span id="demand-count-slow">0</span>)
+                </button>
+                <button type="button" id="demand-filter-overstock" class="intel-tab-btn" role="tab" aria-selected="false">
+                  Possible Overstock (<span id="demand-count-overstock">0</span>)
+                </button>
+                <button type="button" id="demand-filter-calib" class="intel-tab-btn" role="tab" aria-selected="false">
+                  Calibrating (<span id="demand-count-calib">0</span>)
+                </button>
+              </div>
+
+              <div class="search-field-unit intel-search-wrap">
+                <span class="search-icon-adornment">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                </span>
+                <input type="text" id="demand-search-input" placeholder="Search by product name or SKU..." aria-label="Search demand insights items">
+              </div>
+            </div>
+
+            <!-- Demand Table -->
+            <div id="demand-table-container" class="ledger-table-container" style="margin-top: 1rem;">
+              <table class="ledger-table intel-table" id="demand-table">
+                <thead>
+                  <tr>
+                    <th style="min-width: 200px;">Product &amp; SKU</th>
+                    <th style="text-align: right; min-width: 100px;">On-Hand / Min</th>
+                    <th style="text-align: right; min-width: 130px;">Recent vs Prior Units</th>
+                    <th style="text-align: center; min-width: 130px;">Demand Trend</th>
+                    <th style="text-align: right; min-width: 120px;">Sales Velocity</th>
+                    <th style="min-width: 240px;">Overstock &amp; Movement Review</th>
+                  </tr>
+                </thead>
+                <tbody id="demand-tbody">
+                  <!-- Populated dynamically by JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Empty Catalog State -->
+            <div id="demand-empty-catalog" class="dash-panel-empty-state hidden" style="margin-top: 1rem;">
+              <div style="font-weight: 600; color: var(--color-text-main);">No Products in Catalog</div>
+              <div style="font-size: 0.8rem; color: var(--color-text-muted);">Add active catalog items to analyze demand trends and detect slow-moving inventory.</div>
+            </div>
+
+            <!-- Filter No Results State -->
+            <div id="demand-empty-filter" class="dash-panel-empty-state hidden" style="margin-top: 1rem;">
+              <div style="font-weight: 600; color: var(--color-text-main);">No matching items found</div>
+              <div style="font-size: 0.8rem; color: var(--color-text-muted);">No products match the selected trend category or search query.</div>
+            </div>
+
+            <!-- Methodology Transparency & Disclaimer Box -->
+            <div id="demand-disclaimer-box" class="ai-limitations-box" style="margin-top: 1.25rem;">
+              <div class="ai-limitations-header">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span>Demand Insights Calculation Rules &amp; Operational Disclaimers</span>
+              </div>
+              <ul class="ai-limitations-list">
+                <li id="demand-disclaimer-periods">Calculations compare completed sales orders between the active window and an equivalent preceding window. Cancelled and draft orders are excluded.</li>
+                <li id="demand-disclaimer-overstock">Possible overstock flags are operational indicators based on historical velocity and reorder thresholds. They do not constitute financial forecasts, definitive inventory write-downs, or guaranteed liquidation capital.</li>
+                <li>Products in catalog for fewer than 30 days are classified as Calibrating to avoid premature low-turnover classifications.</li>
+              </ul>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- MODULE 1: INVENTORY & CATALOG MANAGEMENT -->
+      <section id="module-inventory" class="hidden" role="tabpanel" aria-labelledby="nav-tab-inventory">
+
+        <!-- Inventory Summary Metrics Ribbon -->
+        <div class="metrics-ribbon-grid">
+          <div class="metric-ribbon-cell anchor-cell">
+            <span class="metric-cell-label">Total Inventory Valuation</span>
+            <span id="stat-total-valuation" class="metric-cell-val anchor-val tabular-nums mono">₹0.00</span>
+          </div>
+          <div class="metric-ribbon-cell">
+            <span class="metric-cell-label">Catalog SKUs</span>
+            <span id="stat-total-products" class="metric-cell-val tabular-nums">0</span>
+          </div>
+          <div class="metric-ribbon-cell">
+            <span class="metric-cell-label">On-Hand Units</span>
+            <span id="stat-total-units" class="metric-cell-val tabular-nums">0</span>
+          </div>
+          <div class="metric-ribbon-cell">
+            <span class="metric-cell-label">Restock Alert Items</span>
+            <span id="stat-low-stock" class="metric-cell-val warning tabular-nums">0</span>
           </div>
         </div>
 
-        <!-- Inventory Operational Summary Cards -->
-        <div class="inventory-stats-grid mb-4">
-          <div class="stat-card">
-            <span class="stat-label">Total Products</span>
-            <span id="stat-total-products" class="stat-value">0</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-label">Total Units in Stock</span>
-            <span id="stat-total-units" class="stat-value">0</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-label">Low / Out of Stock</span>
-            <span id="stat-low-stock" class="stat-value text-warning">0</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-label">Inventory Valuation</span>
-            <span id="stat-total-valuation" class="stat-value">-</span>
-          </div>
-        </div>
-
-        <!-- Main Inventory Card -->
-        <div class="card">
-          <div class="inventory-card-header">
+        <!-- Inventory Operational Panel -->
+        <div class="operational-panel">
+          <div class="panel-header-row">
             <div>
-              <h3 class="section-title">Product Inventory</h3>
-              <p class="section-subtitle">Real-time inventory levels, pricing, and stock monitoring.</p>
+              <h3 class="panel-title">Product Catalog & Warehouse Reserves</h3>
+              <p class="panel-subtitle">Audited inventory balances, supplier links, and real-time safety thresholds.</p>
             </div>
-            <button id="btn-open-add-product" class="btn btn-primary btn-sm">
-              + Add Product
+            <button id="btn-open-add-product" class="btn btn-primary" type="button">
+              + Ingest New Product
             </button>
           </div>
 
-          <!-- Inventory Filter & Search Toolbar -->
-          <div class="inventory-toolbar">
-            <div class="search-input-wrapper">
-              <input type="text" id="inventory-search" placeholder="Search by product name or SKU..." aria-label="Search products">
+          <!-- Precision Inventory Toolbar -->
+          <div class="precision-toolbar">
+            <div class="search-field-unit">
+              <span class="search-icon-adornment">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </span>
+              <input type="text" id="inventory-search" placeholder="Search by product name or SKU..." aria-label="Search inventory">
             </div>
-            <div class="filter-controls">
-              <select id="filter-category" aria-label="Filter by category">
+
+            <div class="filter-cluster">
+              <select id="filter-category" class="precision-select" aria-label="Filter by Category">
                 <option value="all">All Categories</option>
               </select>
-              <select id="filter-stock-status" aria-label="Filter by stock status">
+              <select id="filter-stock-status" class="precision-select" aria-label="Filter by Stock Status">
                 <option value="all">All Stock Statuses</option>
-                <option value="in_stock">In Stock</option>
-                <option value="low_stock">Low Stock Alert</option>
-                <option value="out_of_stock">Out of Stock</option>
+                <option value="in_stock">In Stock (Optimal)</option>
+                <option value="low_stock">Low Stock (Threshold Warning)</option>
+                <option value="out_of_stock">Out of Stock (Depleted)</option>
               </select>
-              <select id="sort-products" aria-label="Sort products">
-                <option value="name-asc">Name (A → Z)</option>
-                <option value="name-desc">Name (Z → A)</option>
-                <option value="stock-desc">Stock (High → Low)</option>
-                <option value="stock-asc">Stock (Low → High)</option>
-                <option value="value-desc">Inventory Value (High → Low)</option>
+              <select id="sort-products" class="precision-select" aria-label="Sort Catalog Items">
+                <option value="created-desc">Sort: Newest First</option>
+                <option value="name-asc">Sort: Product Name (A–Z)</option>
+                <option value="name-desc">Sort: Product Name (Z–A)</option>
+                <option value="stock-asc">Sort: Stock Level (Lowest First)</option>
+                <option value="stock-desc">Sort: Stock Level (Highest First)</option>
+                <option value="value-desc">Sort: Inventory Valuation</option>
               </select>
             </div>
           </div>
 
-          <!-- Products Table Container -->
-          <div class="table-responsive">
-            <table class="data-table" id="products-table">
+          <!-- Inventory Data Table -->
+          <div class="ledger-table-container">
+            <table class="ledger-table" id="products-table">
               <thead>
                 <tr>
                   <th>Product & Category</th>
-                  <th>SKU</th>
-                  <th>Purchase Price</th>
-                  <th>Selling Price</th>
-                  <th>Stock Level</th>
-                  <th>Status</th>
-                  <th>Inventory Value</th>
-                  <th class="text-right">Actions</th>
+                  <th>SKU Code</th>
+                  <th style="text-align: right;">Cost Price</th>
+                  <th style="text-align: right;">Selling Price</th>
+                  <th>Current Reserve / Min</th>
+                  <th>Stock Status</th>
+                  <th style="text-align: right;">Valuation</th>
+                  <th style="text-align: right;">Actions</th>
                 </tr>
               </thead>
               <tbody id="products-tbody">
                 <tr>
-                  <td colspan="8" class="text-center py-4 text-muted">Loading inventory...</td>
+                  <td colspan="8" style="text-align: center; padding: 3rem; color: var(--color-text-secondary);">
+                    Loading inventory records...
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
 
-          <!-- Empty State Container -->
+          <!-- Empty Inventory State -->
           <div id="inventory-empty-state" class="empty-state hidden">
-            <div class="empty-state-icon">📦</div>
-            <h4 class="empty-state-title">No products found</h4>
-            <p class="empty-state-text">Get started by creating your first product in this business workspace.</p>
-            <button id="btn-empty-add-product" class="btn btn-primary btn-sm">+ Add First Product</button>
+            <div class="empty-state-icon">
+              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+              </svg>
+            </div>
+            <h4 class="empty-state-title">No Catalog Items Ingested</h4>
+            <p class="empty-state-text">Your organization has no products recorded. Ingest your first product item to track inventory balances.</p>
+            <button id="btn-empty-add-product" class="btn btn-primary btn-sm" type="button">+ Ingest First Product</button>
           </div>
         </div>
-      </section>
-    </main>
 
-    <!-- MODAL 1: Add / Edit Product Modal -->
-    <div id="product-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-product-title">
-      <div class="modal-card">
-        <div class="modal-header">
-          <h3 id="modal-product-title">Add New Product</h3>
-          <button id="btn-close-product-modal" class="modal-close" aria-label="Close modal">&times;</button>
+      </section>
+
+      <!-- MODULE 2: SALES & OUTGOING DISPATCH -->
+      <section id="module-sales" class="hidden" role="tabpanel" aria-labelledby="nav-tab-sales">
+
+        <div class="metrics-ribbon-grid">
+          <div class="metric-ribbon-cell anchor-cell">
+            <span class="metric-cell-label">Total Outgoing Sales Revenue</span>
+            <span id="stat-total-sales-revenue" class="metric-cell-val anchor-val tabular-nums mono">₹0.00</span>
+          </div>
+          <div class="metric-ribbon-cell">
+            <span class="metric-cell-label">Completed Sales</span>
+            <span id="stat-total-sales" class="metric-cell-val tabular-nums">0</span>
+          </div>
+          <div class="metric-ribbon-cell">
+            <span class="metric-cell-label">Total Units Dispatched</span>
+            <span id="stat-total-units-sold" class="metric-cell-val tabular-nums">0 Units</span>
+          </div>
+          <div class="metric-ribbon-cell">
+            <span class="metric-cell-label">Dispatch Status</span>
+            <span class="status-pill instock" style="width: fit-content; margin-top: 0.25rem;">Live Decrements Active</span>
+          </div>
         </div>
 
-        <form id="product-form" novalidate>
-          <input type="hidden" id="prod-id" name="id">
+        <div class="operational-panel">
+          <div class="panel-header-row">
+            <div>
+              <h3 class="panel-title">Sales Orders & Customer Manifests</h3>
+              <p class="panel-subtitle">Audited customer invoices, stock depletion records, and customer accounts.</p>
+            </div>
+            <button id="btn-open-record-sale" class="btn btn-primary" type="button">
+              + Record Customer Sale
+            </button>
+          </div>
 
-          <div id="product-modal-alert" class="alert hidden" role="alert"></div>
+          <div class="precision-toolbar">
+            <div class="search-field-unit">
+              <span class="search-icon-adornment">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </span>
+              <input type="text" id="sales-search" placeholder="Search sale # or customer name..." aria-label="Search sales">
+            </div>
+          </div>
+
+          <div class="ledger-table-container">
+            <table class="ledger-table" id="sales-table">
+              <thead>
+                <tr>
+                  <th>Sale Reference</th>
+                  <th>Transaction Date</th>
+                  <th>Customer / Account</th>
+                  <th>Quantity Sold</th>
+                  <th style="text-align: right;">Total Amount</th>
+                  <th>Status</th>
+                  <th style="text-align: right;">Manifest</th>
+                </tr>
+              </thead>
+              <tbody id="sales-tbody">
+                <tr>
+                  <td colspan="7" style="text-align: center; padding: 3rem; color: var(--color-text-secondary);">
+                    Loading customer sales history...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div id="sales-empty-state" class="empty-state hidden">
+            <div class="empty-state-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <line x1="12" y1="1" x2="12" y2="23"></line>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+              </svg>
+            </div>
+            <h4 class="empty-state-title">No Outgoing Sales Recorded</h4>
+            <p class="empty-state-text">Record your first customer order to decrement stock balances and generate invoice records.</p>
+            <button id="btn-empty-record-sale" class="btn btn-primary btn-sm" type="button">+ Record First Sale</button>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- MODULE 3: PROCUREMENT & RESTOCKING -->
+      <section id="module-purchases" class="hidden" role="tabpanel" aria-labelledby="nav-tab-purchases">
+
+        <div class="metrics-ribbon-grid">
+          <div class="metric-ribbon-cell anchor-cell">
+            <span class="metric-cell-label">Total Procurement Spend</span>
+            <span id="stat-total-purchases-spend" class="metric-cell-val anchor-val tabular-nums mono">₹0.00</span>
+          </div>
+          <div class="metric-ribbon-cell">
+            <span class="metric-cell-label">Total Purchase Orders</span>
+            <span id="stat-total-purchases" class="metric-cell-val tabular-nums">0</span>
+          </div>
+          <div class="metric-ribbon-cell">
+            <span class="metric-cell-label">Pending Receipt</span>
+            <span id="stat-pending-purchases" class="metric-cell-val warning tabular-nums">0 POs</span>
+          </div>
+          <div class="metric-ribbon-cell">
+            <span class="metric-cell-label">Procurement Flow</span>
+            <span class="status-pill ordered" style="width: fit-content; margin-top: 0.25rem;">Atomic Receiving Active</span>
+          </div>
+        </div>
+
+        <div class="operational-panel">
+          <div class="panel-header-row">
+            <div>
+              <h3 class="panel-title">Purchase Orders & Inbound Shipments</h3>
+              <p class="panel-subtitle">Vendor supply chain tracking, purchase order manifests, and inventory replenishment.</p>
+            </div>
+            <button id="btn-open-create-purchase" class="btn btn-primary" type="button">
+              + Generate Purchase Order
+            </button>
+          </div>
+
+          <div class="precision-toolbar">
+            <div class="filter-cluster">
+              <label for="filter-purchase-status" style="font-size: 0.8rem; font-weight: 600; color: var(--color-text-secondary);">PO Status:</label>
+              <select id="filter-purchase-status" class="precision-select" aria-label="Filter Purchase Orders by Status">
+                <option value="all">All Purchase Orders</option>
+                <option value="ordered">Ordered (In Transit)</option>
+                <option value="received">Received (Restocked)</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="ledger-table-container">
+            <table class="ledger-table" id="purchases-table">
+              <thead>
+                <tr>
+                  <th>Purchase Order</th>
+                  <th>Order Date</th>
+                  <th>Vendor / Supplier</th>
+                  <th>Total Units</th>
+                  <th style="text-align: right;">Total Spend</th>
+                  <th>Order State</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="purchases-tbody">
+                <tr>
+                  <td colspan="7" style="text-align: center; padding: 3rem; color: var(--color-text-secondary);">
+                    Loading purchase orders...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div id="purchases-empty-state" class="empty-state hidden">
+            <div class="empty-state-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="1" y="3" width="15" height="13"></rect>
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+              </svg>
+            </div>
+            <h4 class="empty-state-title">No Purchase Orders Created</h4>
+            <p class="empty-state-text">Create a purchase order to track inbound stock from your verified vendors.</p>
+            <button id="btn-empty-create-purchase" class="btn btn-primary btn-sm" type="button">+ Create First Purchase Order</button>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- =========================================================================
+       6. MODAL DIALOGS (PRODUCT, DELETE, SALE, PURCHASE, DETAILS, AUDIT)
+       ========================================================================= -->
+
+  <!-- MODAL 1: ADD / EDIT PRODUCT -->
+  <div id="product-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-product-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-product-title">Ingest Product Item</h3>
+        <button id="btn-close-product-modal" class="modal-close" type="button" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div id="product-modal-alert" class="global-alert-strip hidden" role="alert"></div>
+
+        <form id="product-form">
+          <input type="hidden" id="prod-id">
 
           <div class="form-group">
-            <label for="prod-name">Product Name <span class="required">*</span></label>
-            <input type="text" id="prod-name" name="name" required placeholder="e.g. Wireless Ergonomic Mouse" maxlength="150">
+            <label for="prod-name">Product Name *</label>
+            <input type="text" id="prod-name" required placeholder="e.g. Precision Tungsten Drill Bit Set">
           </div>
 
           <div class="form-row">
-            <div class="form-group form-col">
-              <label for="prod-sku">SKU <span class="optional">(Unique per business)</span></label>
-              <input type="text" id="prod-sku" name="sku" placeholder="e.g. WEM-001" maxlength="50">
+            <div class="form-group">
+              <label for="prod-sku">SKU Code</label>
+              <input type="text" id="prod-sku" placeholder="e.g. BIT-TUNG-001" class="mono">
             </div>
-            <div class="form-group form-col">
+            <div class="form-group">
               <label for="prod-category">Category</label>
-              <input type="text" id="prod-category" name="category" placeholder="e.g. Electronics, Grocery" list="category-suggestions" maxlength="50">
-              <datalist id="category-suggestions">
-                <option value="General">
-                <option value="Electronics">
-                <option value="Grocery">
-                <option value="Apparel">
-                <option value="Food & Beverage">
-                <option value="Hardware">
-                <option value="Healthcare">
-              </datalist>
+              <input type="text" id="prod-category" placeholder="e.g. Tooling & Machinery">
             </div>
           </div>
 
           <div class="form-row">
-            <div class="form-group form-col">
-              <label for="prod-purchase-price">Purchase Price <span class="required">*</span></label>
-              <input type="number" id="prod-purchase-price" name="purchase_price" required min="0" step="0.01" placeholder="0.00">
+            <div class="form-group">
+              <label for="prod-purchase-price">Cost Price (Purchase Rate) *</label>
+              <input type="number" id="prod-purchase-price" required min="0" step="0.01" placeholder="0.00" class="mono">
             </div>
-            <div class="form-group form-col">
-              <label for="prod-selling-price">Selling Price <span class="required">*</span></label>
-              <input type="number" id="prod-selling-price" name="selling_price" required min="0" step="0.01" placeholder="0.00">
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group form-col">
-              <label for="prod-stock">Current Stock <span class="required">*</span></label>
-              <input type="number" id="prod-stock" name="current_stock" required min="0" step="1" value="0">
-            </div>
-            <div class="form-group form-col">
-              <label for="prod-min-stock">Minimum Stock Alert <span class="required">*</span></label>
-              <input type="number" id="prod-min-stock" name="minimum_stock" required min="0" step="1" value="5">
-              <span class="field-hint">Triggers Low Stock indicator when current stock falls to or below this level.</span>
+            <div class="form-group">
+              <label for="prod-selling-price">Selling Price (Customer Rate) *</label>
+              <input type="number" id="prod-selling-price" required min="0" step="0.01" placeholder="0.00" class="mono">
             </div>
           </div>
 
           <div class="form-row">
-            <div class="form-group form-col">
-              <label for="prod-supplier">Supplier <span class="optional">(Optional)</span></label>
-              <select id="prod-supplier" name="supplier_id">
+            <div class="form-group">
+              <label for="prod-stock">Current Stock Reserve</label>
+              <input type="number" id="prod-stock" min="0" step="1" value="0" class="mono">
+            </div>
+            <div class="form-group">
+              <label for="prod-min-stock">Restock Threshold (Safety Min)</label>
+              <input type="number" id="prod-min-stock" min="0" step="1" value="5" class="mono">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="prod-supplier">Designated Vendor</label>
+              <select id="prod-supplier">
                 <option value="">No Supplier Attached</option>
               </select>
             </div>
-            <div class="form-group form-col">
+            <div class="form-group">
               <label for="prod-unit">Unit of Measure</label>
-              <input type="text" id="prod-unit" name="unit" placeholder="units, pcs, boxes, kg" value="units" maxlength="20">
+              <input type="text" id="prod-unit" placeholder="units, kg, meters..." value="units">
             </div>
-          </div>
-
-          <div class="modal-actions">
-            <button type="button" id="btn-cancel-product" class="btn btn-secondary">Cancel</button>
-            <button type="submit" id="btn-save-product" class="btn btn-primary">Save Product</button>
           </div>
         </form>
       </div>
-    </div>
 
-    <!-- MODAL 2: Delete Confirmation Modal -->
-    <div id="delete-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-delete-title">
-      <div class="modal-card modal-sm">
-        <div class="modal-header">
-          <h3 id="modal-delete-title">Confirm Product Deletion</h3>
-          <button id="btn-close-delete-modal" class="modal-close" aria-label="Close modal">&times;</button>
-        </div>
-        <div class="modal-body">
-          <p>Are you sure you want to delete <strong id="delete-product-name">-</strong>?</p>
-          <p class="field-hint mt-2">This action removes the product from your active inventory.</p>
-        </div>
-        <div class="modal-actions">
-          <button type="button" id="btn-cancel-delete" class="btn btn-secondary">Cancel</button>
-          <button type="button" id="btn-confirm-delete" class="btn btn-danger">Delete Product</button>
-        </div>
+      <div class="modal-actions">
+        <button type="button" id="btn-cancel-product" class="btn btn-secondary">Cancel</button>
+        <button type="submit" form="product-form" id="btn-save-product" class="btn btn-primary">Save Product</button>
       </div>
     </div>
   </div>
 
+  <!-- MODAL 2: DELETE CONFIRMATION -->
+  <div id="delete-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-delete-title">
+    <div class="modal-card" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3 id="modal-delete-title" style="color: var(--color-danger);">Delete Product</h3>
+        <button id="btn-close-delete-modal" class="modal-close" type="button" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <p style="font-size: 0.95rem; margin-bottom: 0.75rem;">
+          Are you sure you want to delete <strong id="delete-product-name">this item</strong> from your catalog?
+        </p>
+        <p style="font-size: 0.85rem; color: var(--color-danger);">
+          Notice: Products with existing transaction history cannot be purged to preserve audit compliance.
+        </p>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" id="btn-cancel-delete" class="btn btn-secondary">Cancel</button>
+        <button type="button" id="btn-confirm-delete" class="btn" style="background-color: var(--color-danger); color: #FFFFFF; border: none;">
+          Confirm Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: RECORD CUSTOMER SALE -->
+  <div id="sale-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-sale-title">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3 id="modal-sale-title">Record Customer Sale Manifest</h3>
+        <button id="btn-close-sale-modal" class="modal-close" type="button" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div id="sale-modal-alert" class="global-alert-strip hidden" role="alert"></div>
+
+        <form id="sale-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="sale-customer-name">Customer / Account Name</label>
+              <input type="text" id="sale-customer-name" placeholder="Walk-in Customer / Client Co.">
+            </div>
+            <div class="form-group">
+              <label for="sale-date">Transaction Date *</label>
+              <input type="date" id="sale-date" required class="mono">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="sale-notes">Invoice Notes / Reference</label>
+            <input type="text" id="sale-notes" placeholder="Optional delivery reference, PO number...">
+          </div>
+
+          <div style="margin: 1.5rem 0 0.5rem; display: flex; align-items: center; justify-content: space-between;">
+            <h4 style="font-size: 0.9rem; font-weight: 700; color: var(--color-text-main);">Itemized Dispatch Lines</h4>
+            <button type="button" id="btn-add-sale-row" class="btn btn-secondary btn-sm">+ Add Line Item</button>
+          </div>
+
+          <div class="ledger-table-container">
+            <table class="ledger-table">
+              <thead>
+                <tr>
+                  <th style="width: 38%;">Select Product</th>
+                  <th style="width: 16%;">Available Stock</th>
+                  <th style="width: 14%;">Quantity</th>
+                  <th style="width: 16%;">Unit Price</th>
+                  <th style="width: 16%; text-align: right;">Total</th>
+                  <th style="width: 5%;"></th>
+                </tr>
+              </thead>
+              <tbody id="sale-items-tbody">
+                <!-- Dynamically populated rows -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="transaction-summary-bar">
+            <span class="transaction-summary-label">TOTAL TRANSACTION VALUE:</span>
+            <span id="sale-grand-total" class="transaction-summary-amount">₹0.00</span>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" id="btn-cancel-sale" class="btn btn-secondary">Cancel</button>
+        <button type="submit" form="sale-form" id="btn-submit-sale" class="btn btn-primary">Complete Sale & Decrement</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 4: CREATE PURCHASE ORDER -->
+  <div id="purchase-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-purchase-title">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3 id="modal-purchase-title">Generate Vendor Purchase Order</h3>
+        <button id="btn-close-purchase-modal" class="modal-close" type="button" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div id="purchase-modal-alert" class="global-alert-strip hidden" role="alert"></div>
+
+        <form id="purchase-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="purchase-supplier-select">Target Vendor / Supplier</label>
+              <select id="purchase-supplier-select">
+                <option value="">No Supplier Attached</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="purchase-status-select">Order Status</label>
+              <select id="purchase-status-select">
+                <option value="ordered" selected>Ordered (In Transit)</option>
+                <option value="received">Received (Immediately Restock)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="purchase-date">Purchase Date *</label>
+              <input type="date" id="purchase-date" required class="mono">
+            </div>
+            <div class="form-group">
+              <label for="purchase-notes">PO Notes / Reference</label>
+              <input type="text" id="purchase-notes" placeholder="e.g. Air freight consignment, invoice #...">
+            </div>
+          </div>
+
+          <div style="margin: 1.5rem 0 0.5rem; display: flex; align-items: center; justify-content: space-between;">
+            <h4 style="font-size: 0.9rem; font-weight: 700; color: var(--color-text-main);">Inbound Line Items</h4>
+            <button type="button" id="btn-add-purchase-row" class="btn btn-secondary btn-sm">+ Add Line Item</button>
+          </div>
+
+          <div class="ledger-table-container">
+            <table class="ledger-table">
+              <thead>
+                <tr>
+                  <th style="width: 38%;">Select Product</th>
+                  <th style="width: 16%;">Current Stock</th>
+                  <th style="width: 14%;">Quantity</th>
+                  <th style="width: 16%;">Unit Cost</th>
+                  <th style="width: 16%; text-align: right;">Total</th>
+                  <th style="width: 5%;"></th>
+                </tr>
+              </thead>
+              <tbody id="purchase-items-tbody">
+                <!-- Dynamically populated rows -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="transaction-summary-bar">
+            <span class="transaction-summary-label">TOTAL PROCUREMENT VALUE:</span>
+            <span id="purchase-grand-total" class="transaction-summary-amount">₹0.00</span>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" id="btn-cancel-purchase" class="btn btn-secondary">Cancel</button>
+        <button type="submit" form="purchase-form" id="btn-submit-purchase" class="btn btn-primary">Create Purchase Order</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 5: TRANSACTION DETAILS MANIFEST -->
+  <div id="details-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-details-title">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3 id="modal-details-title">Transaction Manifest</h3>
+        <button id="btn-close-details-modal" class="modal-close" type="button" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="workspace-spec-strip" style="margin-bottom: 1.5rem; background-color: var(--color-surface-subtle); padding: 1rem 1.25rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm);">
+          <div class="spec-cell">
+            <span class="spec-key">REFERENCE #</span>
+            <span id="details-ref-number" class="spec-val mono">-</span>
+          </div>
+          <div class="spec-cell">
+            <span class="spec-key">DATE</span>
+            <span id="details-date" class="spec-val mono">-</span>
+          </div>
+          <div class="spec-cell">
+            <span id="details-entity-label" class="spec-key">ACCOUNT</span>
+            <span id="details-entity-value" class="spec-val">-</span>
+          </div>
+          <div class="spec-cell">
+            <span class="spec-key">STATE</span>
+            <span id="details-status" class="spec-val">-</span>
+          </div>
+        </div>
+
+        <div id="details-notes-wrapper" class="hidden" style="padding: 0.75rem 1rem; background-color: var(--color-surface-subtle); border: 1px solid var(--color-border); border-radius: var(--radius-sm); margin-bottom: 1.25rem;">
+          <span class="spec-key">DOCUMENT NOTES:</span>
+          <p id="details-notes" style="font-size: 0.88rem; margin-top: 0.2rem;"></p>
+        </div>
+
+        <h4 style="font-size: 0.82rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 0.65rem;">
+          ITEMIZED TRANSACTION MANIFEST
+        </h4>
+
+        <div class="ledger-table-container">
+          <table class="ledger-table">
+            <thead>
+              <tr>
+                <th>Product Description</th>
+                <th>SKU</th>
+                <th>Quantity</th>
+                <th style="text-align: right;">Rate</th>
+                <th style="text-align: right;">Line Total</th>
+              </tr>
+            </thead>
+            <tbody id="details-items-tbody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="transaction-summary-bar">
+          <span class="transaction-summary-label">TOTAL TRANSACTION VALUE:</span>
+          <span id="details-grand-total" class="transaction-summary-amount">₹0.00</span>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" id="btn-dismiss-details" class="btn btn-secondary">Close Manifest</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 6: PRODUCT MOVEMENT AUDIT TRAIL -->
+  <div id="movements-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-movements-title">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <div style="font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; color: var(--color-primary); text-transform: uppercase;">
+            IMMUTABLE LEDGER AUDIT
+          </div>
+          <h3 id="modal-movements-title" style="margin-top: 0.15rem;">Product Movement History</h3>
+        </div>
+        <button id="btn-close-movements-modal" class="modal-close" type="button" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div id="movements-product-spec" class="workspace-spec-strip" style="margin-bottom: 1.25rem; background-color: var(--color-surface-subtle); padding: 0.85rem 1.25rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm);">
+          <div class="spec-cell">
+            <span class="spec-key">PRODUCT</span>
+            <span id="movement-prod-name" class="spec-val">-</span>
+          </div>
+          <div class="spec-cell">
+            <span class="spec-key">SKU CODE</span>
+            <span id="movement-prod-sku" class="spec-val mono">-</span>
+          </div>
+          <div class="spec-cell">
+            <span class="spec-key">CURRENT STOCK RESERVE</span>
+            <span id="movement-prod-stock" class="spec-val tabular-nums">-</span>
+          </div>
+        </div>
+
+        <div class="ledger-table-container">
+          <table class="ledger-table">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Movement Type</th>
+                <th>Quantity Delta</th>
+                <th>Reference Type</th>
+                <th>Audit Reason / Reference</th>
+              </tr>
+            </thead>
+            <tbody id="movements-tbody">
+              <tr>
+                <td colspan="5" style="text-align: center; padding: 2rem; color: var(--color-text-secondary);">
+                  Loading movement history...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" id="btn-dismiss-movements" class="btn btn-secondary">Close Audit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Logic Controller -->
   <script src="/js/app.js"></script>
 </body>
 </html>
